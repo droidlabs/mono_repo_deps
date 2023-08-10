@@ -1,0 +1,31 @@
+setup do
+  env do
+    ENV['RUBY_ENV'] || raise('RUBY_ENV environment variable is not set')
+  end
+
+  configs_dir             'configs'
+  package_subdir_name     'package'
+
+  inflections do
+    overwrite ->(klass_name) do
+      klass_name
+        .gsub("Dto", "DTO")
+        .gsub("Dao", "DAO")
+        .gsub("Ssl", "SSL")
+        .gsub("HdMetal", "HDMetal")
+        .gsub("Ffmpeg", "FFmpeg")
+        .gsub("Ocsp", "OCSP")
+        .gsub("Pem", "PEM")
+        .gsub("Dsl", "DSL")
+        .gsub("Acme", "ACME")
+        .gsub("Fqdn", "FQDN")
+    end
+
+    resolve filename: 'uuid_generator', as: "UUIDGenerator"
+    resolve filename: 'fraud_detection_ml_api', as: "FraudDetectionMLApi"
+    resolve filename: 'json', as: "JSON"
+    resolve filename: 'hcast_config', as: "HCastConfig"
+    resolve filename: 'api', as: "API"
+    resolve filename: 'pg_config', as: "PGConfig"
+  end
+end

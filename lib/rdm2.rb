@@ -10,6 +10,14 @@ module Rdm2
   PROJECT_FILENAME = 'Rdm.packages'
   PACKAGE_FILENAME = 'Package.rb'
 
+  module Rdm2::Mixins
+    require 'contracts'
+    def self.included(base)
+      base.include Contracts::Core
+      base.include Contracts::Builtin
+    end
+  end
+
   class Container < Dry::System::Container
     use :zeitwerk
 
@@ -22,7 +30,7 @@ module Rdm2
     end
   end
 
-  # Container.finalize!
+  Container.finalize!
 
   Deps = Container.injector
 

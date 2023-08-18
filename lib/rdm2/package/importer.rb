@@ -7,17 +7,18 @@ class Rdm2::Package::Importer
     project_builder: "project.builder",
   ]
 
-  Contract String, KeywordArgs[
+  Contract Or[String, Symbol], KeywordArgs[
     from: String,
     env: Maybe[Symbol]
   ] => nil
   def call(package_name, from:, env: nil)
+    package_name = package_name.to_sym
     project = project_builder.call(from)
     env ||= project.env
 
     imported = []
     entrypoints = []
-    dependency_hash = { name: package_name.to_sym, only: nil, skip: nil }
+    dependency_hash = { name: package_name, only: nil, skip: nil }
 
     import_dependency(dependency_hash, imported, entrypoints, project.packages, env, project.package_dir) do |workdir|
       project.loader.push_dir( workdir )
@@ -45,7 +46,7 @@ class Rdm2::Package::Importer
       .get_dependencies(env)
       .tap { |pd|
         if dependency_hash[:only]
-          pd.select! { dependency_hash[:only].include?(_1[name]) }
+          pd.select! { dependency_hash[:only].include?(_1[:name]) }
         end
 
         if dependency_hash[:skip]

@@ -1,31 +1,65 @@
 # frozen_string_literal: true
 
-require_relative "rdm2/version"
+require 'rdm2/version'
+require 'dry/system'
+require 'pry'
 
 module Rdm2
   class Error < StandardError; end
 
-  class << self
-    def init(path, env = nil)
-      package = Rdm2::Package.build(path)
+  PROJECT_FILENAME = 'Rdm.packages'
+  PACKAGE_FILENAME = 'Package.rb'
 
-      Rdm2::PackageImporter.instance.import(package.name)
+  class Container < Dry::System::Container
+    use :zeitwerk
+
+    configure do |config|
+      config.root = __dir__
+
+      config.component_dirs.add 'rdm2' do |dir|
+        dir.namespaces.add nil, key: nil, const: "rdm2"
+      end
+    end
+  end
+
+  # Container.finalize!
+
+  Deps = Container.injector
+
+  class << self
+    attr_accessor :project
+
+    def init(path = nil, env = nil)
+      path ||= File.dirname(caller_locations.last.path)
+      project = Container["project.builder"].call(path)
+      package = Container["package.builder"].call(path, project.root)
+
+      Container["package.importer"].call(package.name, from: path, env: env)
     end
 
-    def import_package(package_name, group = nil)
-      Rdm2::PackageImporter.instance.import(package.name)
+    def import_package(package_name, from: nil, env: nil)
+      from ||= File.dirname(caller_locations.last.path)
+
+      Container["package.importer"].call(package_name, from: from, env: env)
     end
 
     def list_packages
-      project = Rdm2::ProjectLoader.instance.load
-
-      project.packages
+      # TODO: not implemented
     end
 
     def root
-      project = Rdm2::ProjectLoader.instance.load
+      @project.root
+    end
 
-      project.root
+    def loader
+      @project.loader
+    end
+
+    def configs(from = nil)
+      path ||= File.dirname(caller_locations.last.path)
+      project = Container["project.builder"].call(path)
+
+      Container["config.manager"]
     end
   end
 end

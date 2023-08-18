@@ -1,0 +1,4 @@
+orders_app:
+  host: 'some_host'
+  port: 1234
+  db:   'some_db'

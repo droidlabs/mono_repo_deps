@@ -1,0 +1,2 @@
+module StorefrontApp
+end

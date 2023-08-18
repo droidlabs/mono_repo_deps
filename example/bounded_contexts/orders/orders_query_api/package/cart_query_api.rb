@@ -1,0 +1,2 @@
+module CartQueryApi
+end

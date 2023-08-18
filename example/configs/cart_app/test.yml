@@ -1,0 +1,3 @@
+cart_app:
+  host: 'some_test_host'
+  db:   'some_test_db'

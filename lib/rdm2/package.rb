@@ -1,15 +1,16 @@
 class Rdm2::Package
   include Rdm2::Mixins
 
-  attr_reader :name, :root, :dependencies, :configs
+  attr_reader :name, :root_path, :dependencies, :configs
 
   DEFAULT_ENV = :_default_
 
-  Contract String => nil
-  def initialize(root_path)
+  Contract String, String, String => nil
+  def initialize(root_path, package_dir)
     @current_env = DEFAULT_ENV
     @dependencies = { @current_env => [] }
-    @root = root_path
+    @root_path = root_path
+    @package_dir = package_dir
 
     nil
   end
@@ -26,12 +27,12 @@ class Rdm2::Package
     name.nil? ? @name : @name = name.to_sym
   end
 
-  def workdir_path(package_dir)
-    File.join( root, package_dir )
+  def workdir_path
+    File.join( self.root_path, @package_dir )
   end
 
-  def entrypoint_path(package_dir)
-    File.join( workdir_path(package_dir), "#{name}.rb" )
+  def entrypoint_file
+    File.join( self.workdir_path, "#{name}.rb" )
   end
 
   # Contract Symbol, Proc => nil
@@ -76,7 +77,6 @@ class Rdm2::Package
 
   Contract Proc => nil
   def package(&block)
-    binding.pry if block.nil?
     instance_exec(&block)
 
     nil

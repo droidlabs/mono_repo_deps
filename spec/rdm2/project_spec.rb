@@ -9,7 +9,7 @@ RSpec.describe Rdm2::Project do
       set_loader :zeitwerk do
         inflect 'uuid_generator' => "UUIDGenerator"
         overwrite ->(klass_name) { klass_name.gsub(/Api/) { _1.upcase } }
-        ignore "#{project.root}/**/schema_migrations"
+        ignore "#{project.root_path}/**/schema_migrations"
       end
     end
   }

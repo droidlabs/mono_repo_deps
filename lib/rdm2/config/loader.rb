@@ -13,8 +13,8 @@ class Rdm2::Config::Loader
     config = Rdm2::Config.new
 
     default_config_filename = File.join(
-      Rdm2.project.root,
-      Rdm2.project.configs_dir,
+      Rdm2.current_project.root_path,
+      Rdm2.current_project.configs_dir,
       config_name,
       DEFAULT_CONFIG_FILENAME
     )
@@ -29,10 +29,10 @@ class Rdm2::Config::Loader
     )
 
     env_config_filename = File.join(
-      Rdm2.project.root,
-      Rdm2.project.configs_dir,
+      Rdm2.current_project.root_path,
+      Rdm2.current_project.configs_dir,
       config_name,
-      "#{Rdm2.project.env}.yml"
+      "#{Rdm2.current_project.env}.yml"
     )
 
     hash_to_config(

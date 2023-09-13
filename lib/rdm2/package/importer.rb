@@ -1,43 +1,46 @@
 require 'set'
+require 'benchmark'
 
 class Rdm2::Package::Importer
   include Rdm2::Mixins
 
   include Rdm2::Deps[
-    project_builder: "project.builder",
+    packages_repo: "package.repo"
   ]
 
   Contract Or[String, Symbol], KeywordArgs[
-    from: String,
     env: Maybe[Symbol]
   ] => nil
-  def call(package_name, from:, env: nil)
+  def call(package_name, env: nil)
     package_name = package_name.to_sym
-    project = project_builder.call(from)
-    env ||= project.env
+    env ||= Rdm2.current_project.env
 
     imported = []
     entrypoints = []
     dependency_hash = { name: package_name, only: nil, skip: nil }
 
-    import_dependency(dependency_hash, imported, entrypoints, project.packages, env, project.package_dir) do |workdir|
-      project.loader.push_dir( workdir )
+    time = Benchmark.realtime do
+      import_dependency(dependency_hash, imported, entrypoints, env) do |workdir|
+        Rdm2.current_project.loader.push_dir( workdir )
+      end
+
+      Rdm2.current_project.loader.setup
+      entrypoints.each { require _1 }
     end
 
-    project.loader.setup
-    entrypoints.each { require _1 }
+    puts "imported package '#{package_name}' with #{imported.size} dependencies in #{'%.2f' % time} seconds for env: #{env}"
 
     nil
   end
 
   private
 
-  def import_dependency(dependency_hash, imported, entrypoints, packages, env, package_dir, &block)
+  def import_dependency(dependency_hash, imported, entrypoints, env, &block)
     return if imported.include?(dependency_hash[:name])
 
-    package = packages.detect { |p| p.name == dependency_hash[:name] }
+    package = packages_repo.find!(dependency_hash[:name])
     if package.nil?
-      raise StandardError.new("package '#{package_name}' is not defined for Rdm2 project: '#{project.root}'")
+      raise StandardError.new("package '#{package_name}' is not defined for Rdm2 project: '#{Rdm2.current_project.root_path}'")
     end
 
     imported.push(dependency_hash[:name])
@@ -52,9 +55,9 @@ class Rdm2::Package::Importer
         if dependency_hash[:skip]
           pd.reject! { dependency_hash[:skip].include?(_1[name]) }
         end
-      }.each { |pd| import_dependency(pd, imported, entrypoints, packages, env, package_dir, &block) }
+      }.each { |pd| import_dependency(pd, imported, entrypoints, env, &block) }
 
-    entrypoints.push( package.entrypoint_path(package_dir) )
-    block.call( package.workdir_path(package_dir) )
+    entrypoints.push( package.entrypoint_file )
+    block.call( package.workdir_path )
   end
 end

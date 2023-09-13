@@ -3,23 +3,18 @@ require 'zeitwerk'
 class Rdm2::Loaders::Zeitwerk < Rdm2::Loaders::Base
   include Rdm2::Mixins
 
-  attr_accessor :overwriters
-
   ERROR_MESSAGE_REGEX = /expected file (?<path>[\w\/]+.rb) to define constant (?<klass>[\w:]+)/
 
-  def initialize(&block)
+  def initialize(...)
     @loader = Zeitwerk::Loader.new
     @loader.inflector = Class.new(Zeitwerk::Inflector).new
-    @overwriters = []
+    @loader.enable_reloading
 
-    instance_eval(&block)
-  end
-
-  def push_dir(dir)
-    @loader.push_dir(dir)
+    super(...)
   end
 
   def setup
+    apply_rules_for(@loader)
     @loader.setup
   end
 
@@ -44,27 +39,15 @@ class Rdm2::Loaders::Zeitwerk < Rdm2::Loaders::Base
     end
   end
 
-  module SetupDsl
-    def inflect(hash)
-      @loader.inflector.inflect(hash)
-    end
+  def apply_rules_for(entity)
+    @autoload_dirs.uniq.each { entity.push_dir(_1) }
+    @ignore_dirs.uniq.each { entity.ignore(_1) }
 
-    def overwrite(proc)
-      overwriters.push(proc)
+    entity.inflector.inflect(@inflections)
 
-      super_proc = ->(kname) {
-        overwriters.each { |o| kname = o.call(kname) }; kname
-      }
-
-      @loader.inflector.define_singleton_method(:camelize) do |basename, abspath|
-        super_proc.call( super(basename, abspath) )
-      end
-    end
-
-    def ignore(glob)
-      @loader.ignore(glob)
+    result_overwriter = ->(kname) { @overwriters.each { |o| kname = o.call(kname) }; kname }
+    entity.inflector.define_singleton_method(:camelize) do |basename, abspath|
+      result_overwriter.call( super(basename, abspath) )
     end
   end
-
-  include SetupDsl
 end

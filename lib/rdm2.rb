@@ -35,39 +35,74 @@ module Rdm2
   Deps = Container.injector
 
   class << self
-    attr_accessor :project
+    attr_accessor :current_project
 
-    def init(path = nil, env = nil)
-      path ||= File.dirname(caller_locations.last.path)
-      project = Container["project.builder"].call(path)
-      package = Container["package.builder"].call(path, project.root)
-
-      Container["package.importer"].call(package.name, from: path, env: env)
+    def import_by_path(from = caller_locations.first.path, env: nil)
+      for_current_project(from) do
+        Container["package.builder"].call(from, current_project.root_path, current_project.package_dir).then do |package|
+          Container["package.importer"].call(package.name, env: env)
+        end
+      end
     end
 
-    def import_package(package_name, from: nil, env: nil)
-      from ||= File.dirname(caller_locations.last.path)
-
-      Container["package.importer"].call(package_name, from: from, env: env)
+    def import_package(package_name, from: caller_locations.first.path, env: nil)
+      for_current_project(from) do
+        Container["package.importer"].call(package_name, env: env)
+      end
     end
 
-    def list_packages
-      # TODO: not implemented
+    def root(from = caller_locations.first.path)
+      current_project.root_path
     end
 
-    def root
-      @project.root
+    def tasks(from = caller_locations.first.path)
+      for_current_project(from) do
+        Container["task.manager"]
+      end
     end
 
-    def loader
-      @project.loader
+    # TODO: find project in registry
+    def loader(from = caller_locations.first.path)
+      for_current_project(from) do
+        current_project.loader
+      end
     end
 
-    def configs(from = nil)
-      path ||= File.dirname(caller_locations.last.path)
-      project = Container["project.builder"].call(path)
+    def configs(from = caller_locations.first.path)
+      # for_current_project(from) do
+        Container["config.manager"]
+      # end
+    end
 
-      Container["config.manager"]
+    def packages(from = caller_locations.first.path)
+      for_current_project(from) do
+        Container["package.repo"]
+      end
+    end
+
+    private
+
+    def for_current_project(path, &block)
+      path = File.expand_path(path)
+      path = File.dirname(path) unless File.directory?(path)
+
+      new_project = Container["project.builder"].call(path)
+
+      if @current_project && @current_project.root_path == new_project.root_path
+        return block.call
+      end
+
+      synchronize do
+        @current_project = new_project
+
+        block.call
+      end
+    end
+
+    def synchronize(&block)
+      @mutex ||= Mutex.new
+
+      @mutex.synchronize(&block)
     end
   end
 end

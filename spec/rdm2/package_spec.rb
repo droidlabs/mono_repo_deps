@@ -19,7 +19,7 @@ RSpec.describe Rdm2::Package do
   }
 
   it "sets up project" do
-    package = Rdm2::Package.new(".")
+    package = Rdm2::Package.new(".", "packages")
     package.instance_exec(&block)
 
     expect(package.name).to eq(:package_0)
@@ -46,7 +46,7 @@ RSpec.describe Rdm2::Package do
 
 
   it "doesn't allow to duplicate dependencies" do
-    package = Rdm2::Package.new(".")
+    package = Rdm2::Package.new(".", "packages")
     expect {
       package.setup(&block_with_duplicates)
     }.to raise_error(StandardError)

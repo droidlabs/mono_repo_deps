@@ -1,15 +1,17 @@
 class Rdm2::Project
   include Rdm2::Mixins
 
-  attr_reader :configs_dir, :package_dir, :root, :packages, :loader
+  attr_reader :configs_dir, :package_dir, :root_path, :packages, :loader, :tasks
 
   LOADERS_MAPPING = { :zeitwerk => Rdm2::Loaders::Zeitwerk }
 
   Contract String => nil
-  def initialize(root_path)
+  def initialize(root_path, &block)
     @env = nil
     @loader = nil
-    @root = root_path
+    @root_path = root_path
+    @packages = []
+    @tasks = []
 
     nil
   end
@@ -58,5 +60,15 @@ class Rdm2::Project
     @loader = LOADERS_MAPPING.fetch(name).new(&block)
 
     nil
+  end
+
+  def register_task(name, on:, &block)
+    @tasks.push(
+      Rdm2::Task.new(
+        name: name,
+        on: on,
+        block: block
+      )
+    )
   end
 end

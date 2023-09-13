@@ -5,8 +5,12 @@ setup do |project|
   set_package_dir 'package'
 
   set_loader :zeitwerk do
-    inflect 'uuid_generator' => "UUIDGenerator"
+    inflect 'filename' => "FileName"
     overwrite ->(klass_name) { klass_name.gsub(/Api/) { _1.upcase } }
-    ignore "#{project.root}/**/schema_migrations"
+    ignore "#{project.root_path}/**/schema_migrations"
+  end
+
+  register_task :print_package_name, on: :package do |package, args|
+    puts package.entrypoint_file
   end
 end

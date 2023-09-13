@@ -8,22 +8,18 @@ class Rdm2::Project::Builder
 
   Contract String => Rdm2::Project
   def call(dir)
-    Rdm2.project ||= begin
-      project_root = find_root.call(dir)
-      project_file = "#{project_root}/#{Rdm2::PROJECT_FILENAME}"
-      packages_path = "#{project_root}/**/#{Rdm2::PACKAGE_FILENAME}"
+    project_root = find_root.call(dir)
+    project_file = "#{project_root}/#{Rdm2::PROJECT_FILENAME}"
+    packages_path = "#{project_root}/**/#{Rdm2::PACKAGE_FILENAME}"
 
-      project = Rdm2::Project.new(project_root).tap do |p|
-        p.instance_eval(File.read(project_file))
-
-        p.set_packages(
-          Dir[packages_path].map do |package_file_path|
-            package_builder.call(File.dirname(package_file_path), project_root)
-          end
-        )
+    project = Rdm2::Project.new(project_root, )
+    project.instance_eval(File.read(project_file))
+    project.set_packages(
+      Dir[packages_path].map do |package_file_path|
+        package_builder.call(File.dirname(package_file_path), project.root_path, project.package_dir)
       end
+    )
 
-      project
-    end
+    project
   end
 end

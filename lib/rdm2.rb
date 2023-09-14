@@ -52,7 +52,9 @@ module Rdm2
     end
 
     def root(from = caller_locations.first.path)
-      current_project.root_path
+      for_current_project(from) do
+        current_project.root_path
+      end
     end
 
     def tasks(from = caller_locations.first.path)

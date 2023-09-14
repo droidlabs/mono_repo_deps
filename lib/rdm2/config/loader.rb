@@ -23,8 +23,15 @@ class Rdm2::Config::Loader
       raise StandardError.new("Config '#{config_name}' was not found. Add it to '#{default_config_filename}'")
     end
 
+    hash =
+      begin
+        YAML.load( ERB.new(File.read(default_config_filename)).result )
+      rescue => e
+        puts ERB.new(File.read(default_config_filename)).result.inspect
+      end
+
     hash_to_config(
-      hash: YAML.load( ERB.new(File.read(default_config_filename)).result ),
+      hash: hash,
       config: config
     )
 

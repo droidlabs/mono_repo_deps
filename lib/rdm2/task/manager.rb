@@ -16,7 +16,7 @@ class Rdm2::Task::Manager
 
       if failed_packages.any?
         puts failed_packages.keys
-        exit(1)
+        exit 1
       end
     else
       raise StandardError.new("unsupported task subject: #{task.on}")
@@ -35,6 +35,7 @@ class Rdm2::Task::Manager
 
     write.close
     Process.wait(pid)
-    $?
+
+    exit($?.exitstatus)
   end
 end

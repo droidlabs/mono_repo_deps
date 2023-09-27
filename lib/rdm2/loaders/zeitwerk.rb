@@ -24,7 +24,7 @@ class Rdm2::Loaders::Zeitwerk < Rdm2::Loaders::Base
       @loader.eager_load
     end
 
-    puts "eager_load dependencies for '#{package_name}' with #{imported.size} dependencies in #{'%.2f' % time} seconds for env: #{env}"
+    puts "eager_load dependencies in #{'%.2f' % time} seconds"
   end
 
   def check_classes

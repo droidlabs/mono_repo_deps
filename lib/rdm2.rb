@@ -3,9 +3,12 @@
 require 'rdm2/version'
 require 'dry/system'
 require 'pry'
+require "zeitwerk"
 
 module Rdm2
   class Error < StandardError; end
+
+  Zeitwerk::Loader.for_gem.setup
 
   PROJECT_FILENAME = 'Rdm.packages'
   PACKAGE_FILENAME = 'Package.rb'
@@ -19,8 +22,6 @@ module Rdm2
   end
 
   class Container < Dry::System::Container
-    use :zeitwerk
-
     configure do |config|
       config.root = __dir__
 
@@ -30,9 +31,9 @@ module Rdm2
     end
   end
 
-  Container.finalize!
-
   Deps = Container.injector
+
+  Container.finalize!
 
   class << self
     attr_accessor :current_project
@@ -71,9 +72,9 @@ module Rdm2
     end
 
     def configs(from = caller_locations.first.path)
-      # for_current_project(from) do
+      for_current_project(from) do
         Container["config.manager"]
-      # end
+      end
     end
 
     def packages(from = caller_locations.first.path)
@@ -81,8 +82,6 @@ module Rdm2
         Container["package.repo"]
       end
     end
-
-    private
 
     def for_current_project(path, &block)
       path = File.expand_path(path)

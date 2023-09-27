@@ -1,5 +1,3 @@
-require 'zeitwerk'
-
 class Rdm2::Loaders::Base
   include Rdm2::Mixins
 

@@ -1,4 +1,5 @@
 require 'zeitwerk'
+require 'benchmark'
 
 class Rdm2::Loaders::Zeitwerk < Rdm2::Loaders::Base
   include Rdm2::Mixins
@@ -19,11 +20,17 @@ class Rdm2::Loaders::Zeitwerk < Rdm2::Loaders::Base
   end
 
   def eager_load
-    @loader.eager_load
+    time = Benchmark.realtime do
+      @loader.eager_load
+    end
+
+    puts "eager_load dependencies for '#{package_name}' with #{imported.size} dependencies in #{'%.2f' % time} seconds for env: #{env}"
   end
 
   def check_classes
     check_classes_loader = @loader.dup
+
+    error_files = []
 
     begin
       check_classes_loader.eager_load
@@ -34,9 +41,14 @@ class Rdm2::Loaders::Zeitwerk < Rdm2::Loaders::Base
 
       # TODO: use logger
       puts "#{match[:path]} => #{match[:klass]}"
+      error_files << match[:path]
       check_classes_loader.ignore(match[:path])
       retry
     end
+
+    raise StandardError.new("loader fails with #{error_files.count} errors") if error_files.any?
+
+    nil
   end
 
   def apply_rules_for(entity)

@@ -1,4 +1,3 @@
-require 'set'
 require 'benchmark'
 
 class Rdm2::Package::Importer
@@ -20,9 +19,7 @@ class Rdm2::Package::Importer
     dependency_hash = { name: package_name, only: nil, skip: nil }
 
     time = Benchmark.realtime do
-      import_dependency(dependency_hash, imported, entrypoints, env) do |workdir|
-        Rdm2.current_project.loader.push_dir( workdir )
-      end
+      import_dependency(dependency_hash, imported, entrypoints, env)
 
       Rdm2.current_project.loader.setup
       entrypoints.each { require _1 }
@@ -58,6 +55,7 @@ class Rdm2::Package::Importer
       }.each { |pd| import_dependency(pd, imported, entrypoints, env, &block) }
 
     entrypoints.push( package.entrypoint_file )
-    block.call( package.workdir_path )
+
+    Rdm2.current_project.loader.push_dir(package.workdir_path)
   end
 end

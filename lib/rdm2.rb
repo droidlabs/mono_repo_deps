@@ -3,12 +3,11 @@
 require 'rdm2/version'
 require 'dry/system'
 require 'pry'
+require 'benchmark'
 require "zeitwerk"
 
 module Rdm2
   class Error < StandardError; end
-
-  Zeitwerk::Loader.for_gem.setup
 
   PROJECT_FILENAME = 'Rdm.packages'
   PACKAGE_FILENAME = 'Package.rb'
@@ -34,6 +33,11 @@ module Rdm2
   Deps = Container.injector
 
   Container.finalize!
+
+  Zeitwerk::Loader
+    .for_gem
+    .tap { _1.setup }
+    .tap { _1.eager_load }
 
   class << self
     attr_accessor :current_project
@@ -87,14 +91,14 @@ module Rdm2
       path = File.expand_path(path)
       path = File.dirname(path) unless File.directory?(path)
 
-      new_project = Container["project.builder"].call(path)
+      root = Container['project.find_root'].call(path)
 
-      if @current_project && @current_project.root_path == new_project.root_path
+      if @current_project && @current_project.root_path == root
         return block.call
       end
 
       synchronize do
-        @current_project = new_project
+        @current_project = Container["project.builder"].call(path)
 
         block.call
       end

@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in rdm2.gemspec
+# Specify your gem's dependencies in mono_repo_deps.gemspec
 gemspec
 
 gem "rake", "~> 13.0"

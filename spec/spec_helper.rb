@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rdm2'
+require 'mono_repo_deps'
 require 'pry'
 
 RSpec.configure do |config|

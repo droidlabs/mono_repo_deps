@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 
 require 'bundler/setup'
-require 'rdm2'
+require 'mono_repo_deps'
 
-# Rdm2.init(__dir__)
+# MonoRepoDeps.init(__dir__)
 
-Rdm2.import_package(:storefront_core)
+MonoRepoDeps.import_package(:storefront_core)
 
 require 'irb'
 IRB.start

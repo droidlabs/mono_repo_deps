@@ -1,7 +1,7 @@
 class MonoRepoDeps::Project
   include MonoRepoDeps::Mixins
 
-  attr_reader :configs_dir, :package_dir, :root_path, :packages, :loader, :tasks
+  attr_reader :configs_dir, :package_dir, :root_path, :packages, :loader, :tasks, :packages_folder
 
   LOADERS_MAPPING = { :zeitwerk => MonoRepoDeps::Loaders::Zeitwerk }
 
@@ -12,6 +12,9 @@ class MonoRepoDeps::Project
     @root_path = root_path
     @packages = []
     @tasks = []
+    @packages_folder = "."
+    @configs_dir = 'configs'
+    @package_dir = 'package'
 
     nil
   end
@@ -51,6 +54,13 @@ class MonoRepoDeps::Project
   Contract String => nil
   def set_package_dir(value)
     @package_dir = value
+
+    nil
+  end
+
+  Contract String => nil
+  def set_packages_folder(value)
+    @packages_folder = value
 
     nil
   end

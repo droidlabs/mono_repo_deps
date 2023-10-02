@@ -87,6 +87,14 @@ module MonoRepoDeps
       end
     end
 
+    def check_classes(from = caller_locations.first.path)
+      for_current_project(from) do
+        Container["package.importer"].import_all
+
+        current_project.loader.check_classes
+      end
+    end
+
     def for_current_project(path, &block)
       path = File.expand_path(path)
       path = File.dirname(path) unless File.directory?(path)

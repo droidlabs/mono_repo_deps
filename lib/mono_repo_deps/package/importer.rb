@@ -30,6 +30,20 @@ class MonoRepoDeps::Package::Importer
     nil
   end
 
+  def import_all
+    imported = []
+    entrypoints = []
+    env = MonoRepoDeps.current_project.env
+
+    packages_repo.all
+      .map { dependency_hash = { name: _1.name, only: nil, skip: nil } }
+      .map { import_dependency(_1, imported, entrypoints, env) }
+
+    MonoRepoDeps.current_project.loader.setup
+
+    entrypoints.each { puts _1; require _1 }
+  end
+
   private
 
   def import_dependency(dependency_hash, imported, entrypoints, env, &block)
@@ -54,7 +68,7 @@ class MonoRepoDeps::Package::Importer
         end
       }.each { |pd| import_dependency(pd, imported, entrypoints, env, &block) }
 
-    entrypoints.push( package.entrypoint_file )
+    entrypoints.push( package.entrypoint_file ) if File.exist?(package.entrypoint_file)
 
     MonoRepoDeps.current_project.loader.push_dir(package.workdir_path)
   end

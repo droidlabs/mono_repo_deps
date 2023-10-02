@@ -29,8 +29,9 @@ class MonoRepoDeps::Loaders::Zeitwerk < MonoRepoDeps::Loaders::Base
 
   def check_classes
     check_classes_loader = @loader.dup
+    check_classes_loader.on_load { |cpath, value, abspath| puts value }
 
-    error_files = []
+    errors = []
 
     begin
       check_classes_loader.eager_load
@@ -40,13 +41,13 @@ class MonoRepoDeps::Loaders::Zeitwerk < MonoRepoDeps::Loaders::Base
       raise e if match.nil?
 
       # TODO: use logger
-      puts "#{match[:path]} => #{match[:klass]}"
-      error_files << match[:path]
+      errors << "#{match[:path]} => #{match[:klass]}"
       check_classes_loader.ignore(match[:path])
       retry
     end
 
-    raise StandardError.new("loader fails with #{error_files.count} errors") if error_files.any?
+    puts errors
+    raise StandardError.new("loader fails with #{errors.count} errors") if errors.any?
 
     nil
   end

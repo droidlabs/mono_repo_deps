@@ -8,6 +8,7 @@ PATH
       dry-container
       dry-core
       dry-system
+      thor
       zeitwerk
 
 GEM
@@ -95,6 +96,7 @@ GEM
     standard-performance (1.2.0)
       lint_roller (~> 1.1)
       rubocop-performance (~> 1.19.0)
+    thor (1.2.2)
     unicode-display_width (2.4.2)
     zeitwerk (2.6.12)
 

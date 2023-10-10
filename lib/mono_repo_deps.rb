@@ -95,6 +95,8 @@ module MonoRepoDeps
       end
     end
 
+    # TODO: It's not obvious that `for_current_project` is changing the global scope (@current_project). 
+    # Maybe we should not use this method as a block, otherwise people may think it's only loading the project inside block.
     def for_current_project(path, &block)
       path = File.expand_path(path)
       path = File.dirname(path) unless File.directory?(path)

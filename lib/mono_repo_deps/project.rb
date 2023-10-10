@@ -3,6 +3,7 @@ class MonoRepoDeps::Project
 
   attr_reader :configs_dir, :package_dir, :root_path, :packages, :loader, :tasks, :packages_folder
 
+  # TODO: This mapping should be in a separate service. Also we should allow extending this variable.
   LOADERS_MAPPING = { :zeitwerk => MonoRepoDeps::Loaders::Zeitwerk }
 
   Contract String => nil

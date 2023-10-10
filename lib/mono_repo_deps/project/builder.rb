@@ -21,6 +21,7 @@ class MonoRepoDeps::Project::Builder
       MonoRepoDeps::PACKAGE_FILENAME
     )
 
+    # TODO: This service has 2 responsibilities: Reading project definition, and loading packages - these concerns should be separated.
     project.set_packages(
       Dir[packages_path].map do |package_file_path|
         package_builder.call(File.dirname(package_file_path), project.root_path, project.package_dir)

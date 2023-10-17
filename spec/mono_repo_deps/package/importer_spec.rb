@@ -130,27 +130,6 @@ RSpec.describe MonoRepoDeps::Package::Importer do
       a_string_matching("cart_datasets.rb")
     ], [:orders_datasets])
     
-    # imported_packages = expect_importing(:orders_core, imported_packages)
-    # imported_packages = expect_importing(:orders_datasets, imported_packages)
-    # imported_packages = expect_importing(:db_connection, imported_packages)
-    # imported_packages = expect_importing(:test_utils, imported_packages)
-    # imported_packages = expect_importing(:paypal_client, imported_packages, [
-    #   a_string_matching("test_utils.rb"), 
-    #   a_string_matching("db_connection.rb"),
-    #   a_string_matching("orders_datasets.rb")
-    # ])
-    # imported_packages = expect_importing(:storefront_core, imported_packages, [
-    #   a_string_matching("test_utils.rb"), 
-    #   a_string_matching("db_connection.rb"),
-    #   a_string_matching("orders_datasets.rb"),
-    #   a_string_matching("paypal_client.rb")
-    # ])
-    # imported_packages = expect_importing(:storefront_datasets, imported_packages, [
-    #   a_string_matching("test_utils.rb"), 
-    #   a_string_matching("db_connection.rb"),
-    #   a_string_matching("orders_datasets.rb"),
-    #   a_string_matching("paypal_client.rb")
-    # ])
     subject.import_all
   end
 end

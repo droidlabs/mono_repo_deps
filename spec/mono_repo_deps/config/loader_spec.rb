@@ -1,6 +1,6 @@
 RSpec.describe MonoRepoDeps::Config::Loader do
   it "works" do
-    MonoRepoDeps.for_current_project(examples_dir) do
+    MonoRepoDeps.sync_current_project!(examples_dir) do
       config = MonoRepoDeps::Container["config.loader"].call('orders_app')
 
       expect(config).to be_a(MonoRepoDeps::Config)

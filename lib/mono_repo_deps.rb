@@ -2,7 +2,6 @@
 
 require 'mono_repo_deps/version'
 require 'dry/system'
-require 'pry'
 require 'benchmark'
 require "zeitwerk"
 
@@ -43,7 +42,7 @@ module MonoRepoDeps
     attr_accessor :current_project
 
     def import_by_path(from = caller_locations.first.path, env: nil)
-      for_current_project(from) do
+      sync_current_project!(from) do
         Container["package.builder"].call(from, current_project.root_path, current_project.package_dir).then do |package|
           Container["package.importer"].call(package.name, env: env)
         end
@@ -51,53 +50,51 @@ module MonoRepoDeps
     end
 
     def import_package(package_name, from: caller_locations.first.path, env: nil)
-      for_current_project(from) do
+      sync_current_project!(from) do
         Container["package.importer"].call(package_name, env: env)
       end
     end
 
     def root(from = caller_locations.first.path)
-      for_current_project(from) do
+      sync_current_project!(from) do
         current_project.root_path
       end
     end
 
     def tasks(from = caller_locations.first.path)
-      for_current_project(from) do
+      sync_current_project!(from) do
         Container["task.manager"]
       end
     end
 
     # TODO: find project in registry
     def loader(from = caller_locations.first.path)
-      for_current_project(from) do
+      sync_current_project!(from) do
         current_project.loader
       end
     end
 
     def configs(from = caller_locations.first.path)
-      for_current_project(from) do
+      sync_current_project!(from) do
         Container["config.manager"]
       end
     end
 
     def packages(from = caller_locations.first.path)
-      for_current_project(from) do
+      sync_current_project!(from) do
         Container["package.repo"]
       end
     end
 
     def check_classes(from = caller_locations.first.path)
-      for_current_project(from) do
+      sync_current_project!(from) do
         Container["package.importer"].import_all
 
         current_project.loader.check_classes
       end
     end
 
-    # TODO: It's not obvious that `for_current_project` is changing the global scope (@current_project). 
-    # Maybe we should not use this method as a block, otherwise people may think it's only loading the project inside block.
-    def for_current_project(path, &block)
+    def sync_current_project!(path, &block)
       path = File.expand_path(path)
       path = File.dirname(path) unless File.directory?(path)
 

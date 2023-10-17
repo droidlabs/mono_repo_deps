@@ -49,6 +49,10 @@ class MonoRepoDeps::Package::Importer
   def import_dependency(dependency_hash, imported, entrypoints, env, &block)
     return if imported.include?(dependency_hash[:name])
 
+    import_dependency!(dependency_hash, imported, entrypoints, env, &block)
+  end
+
+  def import_dependency!(dependency_hash, imported, entrypoints, env, &block)
     package = packages_repo.find!(dependency_hash[:name])
     if package.nil?
       raise StandardError.new("package '#{package_name}' is not defined for MonoRepoDeps project: '#{MonoRepoDeps.current_project.root_path}'")

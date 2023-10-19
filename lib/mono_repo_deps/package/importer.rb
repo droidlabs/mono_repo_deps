@@ -46,6 +46,7 @@ class MonoRepoDeps::Package::Importer
 
   private
 
+  # TODO: This method is resolving dependencies and importing them, we should split these 2 concerns into 2 methods.
   def import_dependency(dependency_hash, imported, entrypoints, env, &block)
     return if imported.include?(dependency_hash[:name])
 

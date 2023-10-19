@@ -35,23 +35,17 @@ module MonoRepoDeps
 
   Zeitwerk::Loader
     .for_gem
-    .tap { _1.setup }
-    .tap { _1.eager_load }
+    .tap(&:setup)
+    .tap(&:eager_load)
 
   class << self
     attr_accessor :current_project
 
-    def import_by_path(from = caller_locations.first.path, env: nil)
-      sync_current_project!(from) do
-        Container["package.builder"].call(from, current_project.root_path, current_project.package_dir).then do |package|
-          Container["package.importer"].call(package.name, env: env)
-        end
-      end
-    end
+    def init_package(package_name = nil, from: caller_locations.first.path, env: nil)
+      sync_current_project(from) do
+        package_name ||= Container["package.builder"].call(from, current_project.root_path, current_project.package_dir).name
 
-    def import_package(package_name, from: caller_locations.first.path, env: nil)
-      sync_current_project!(from) do
-        Container["package.importer"].call(package_name, env: env)
+        Container["package.initializer"].call(package_name, env: env)
       end
     end
 
@@ -88,7 +82,7 @@ module MonoRepoDeps
 
     def check_classes(from = caller_locations.first.path)
       sync_current_project!(from) do
-        Container["package.importer"].import_all
+        Container["package.initializer"].import_all
 
         current_project.loader.check_classes
       end

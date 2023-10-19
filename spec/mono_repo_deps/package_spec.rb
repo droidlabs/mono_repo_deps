@@ -25,12 +25,12 @@ RSpec.describe MonoRepoDeps::Package do
     expect(package.name).to eq(:package_0)
     expect(package.dependencies).to match({
       _default_: [
-        { name: :package_1, only: nil, skip: nil },
-        { name: :package_2, only: [:package_2_1], skip: nil },
-        { name: :package_3, only: nil, skip: [:package_3_1] }
+        MonoRepoDeps::Package::DependencyDto.new(name: :package_1, only: nil, skip: nil),
+        MonoRepoDeps::Package::DependencyDto.new(name: :package_2, only: [:package_2_1], skip: nil),
+        MonoRepoDeps::Package::DependencyDto.new(name: :package_3, only: nil, skip: [:package_3_1])
       ],
       test: [
-        { name: :package_4, only: nil, skip: nil }
+        MonoRepoDeps::Package::DependencyDto.new(name: :package_4, only: nil, skip: nil)
       ]
     })
   end

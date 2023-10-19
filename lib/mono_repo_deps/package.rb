@@ -5,21 +5,21 @@ class MonoRepoDeps::Package
 
   DEFAULT_ENV = :_default_
 
+  DependencyDto = Struct.new(:name, :only, :skip, keyword_init: true)
+
   Contract String, String, String => nil
   def initialize(root_path, package_dir)
     @current_env = DEFAULT_ENV
-    @dependencies = { @current_env => [] }
+    @dependencies = Hash.new { |h, k| h[k] = [] }
     @root_path = root_path
     @package_dir = package_dir
 
     nil
   end
 
+  Contract Or[nil, Symbol] => ArrayOf[DependencyDto]
   def get_dependencies(env = nil)
-    result = @dependencies[DEFAULT_ENV]
-    result += @dependencies.fetch(env, []) unless env.nil?
-
-    result
+    @dependencies[DEFAULT_ENV] + @dependencies.fetch(env, [])
   end
 
   Contract Maybe[Or[String, Symbol]] => Symbol
@@ -57,20 +57,10 @@ class MonoRepoDeps::Package
     skip = skip&.map(&:to_sym)
     only = only&.map(&:to_sym)
 
-    @dependencies[@current_env] ||= []
+    already_imported = get_dependencies(@current_env).map(&:name).include?(package_name)
+    puts ("WARNING: duplicated import '#{package_name}' was already added for package '#{name}'") if already_imported
 
-    already_imported = @dependencies[@current_env].detect do
-      _1[:name] == package_name
-    end
-
-    # TODO: use logger
-    puts ("duplicated import '#{package_name}' was already added for package '#{name}'") if already_imported
-
-    @dependencies[@current_env] << {
-      name: package_name,
-      skip: skip,
-      only: only
-    }
+    @dependencies[@current_env] << DependencyDto.new(name: package_name, skip: skip, only: only)
 
     nil
   end

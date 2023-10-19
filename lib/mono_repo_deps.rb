@@ -36,8 +36,8 @@ module MonoRepoDeps
 
   Zeitwerk::Loader
     .for_gem
-    .tap { _1.setup }
-    .tap { _1.eager_load }
+    .tap(&:setup)
+    .tap(&:eager_load)
 
   class << self
     attr_accessor :current_project

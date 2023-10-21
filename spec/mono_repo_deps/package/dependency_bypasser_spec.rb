@@ -50,9 +50,6 @@ RSpec.describe MonoRepoDeps::Package::DependencyBypasser do
         env: :production
       )
     ).to match([:package_2, :package_1])
-
-
-    MonoRepoDeps::Container.unstub
   end
 end
 

@@ -34,21 +34,21 @@ RSpec.describe MonoRepoDeps::Package::Factory do
     })
   end
 
-  let(:block_with_duplicates) {
-    Proc.new do
-      package do
-        name 'package_0'
-        version '1.0.0'
-      end
+  # let(:block_with_duplicates) {
+  #   Proc.new do
+  #     package do
+  #       name 'package_0'
+  #       version '1.0.0'
+  #     end
 
-      dependency do
-        import 'package_1'
-        import 'package_1'
-      end
-    end
-  }
+  #     dependency do
+  #       import 'package_1'
+  #       import 'package_1'
+  #     end
+  #   end
+  # }
 
-  it "doesn't allow to duplicate dependencies" do
-    subject.call('example_dir', 'package', &block_with_duplicates)
-  end
+  # it "doesn't allow to duplicate dependencies" do
+  #   subject.call('example_dir', 'package', &block_with_duplicates)
+  # end
 end

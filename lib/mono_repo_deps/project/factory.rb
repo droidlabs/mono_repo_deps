@@ -4,11 +4,11 @@ class MonoRepoDeps::Project::Factory
   # TODO: This mapping should be in a separate service. Also we should allow extending this variable.
   LOADERS_MAPPING = { :zeitwerk => MonoRepoDeps::Loaders::Zeitwerk }
 
-  Contract String, String => MonoRepoDeps::Project
-  def call(project_root, setup_content)
+  Contract String, Proc => MonoRepoDeps::Project
+  def call(project_root, &setup_content)
     @project = MonoRepoDeps::Project.new(project_root)
 
-    instance_eval(setup_content)
+    instance_exec(&setup_content)
 
     @project
   end

@@ -1,6 +1,6 @@
 RSpec.describe MonoRepoDeps::Project::Factory do
   let(:block) {
-    <<~HEREDOC
+    Proc.new do
       setup do |project|
         set_env ->() { :test }
 
@@ -13,11 +13,11 @@ RSpec.describe MonoRepoDeps::Project::Factory do
           ignore "\#{project}**/schema_migrations"
         end
       end
-    HEREDOC
+    end
   }
 
   it "sets up project" do
-    project = subject.call('example_dir', block)
+    project = subject.call('example_dir', &block)
 
     expect(project.env).to eq(:test)
     expect(project.configs_dir).to eq('configs')

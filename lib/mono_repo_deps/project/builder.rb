@@ -9,6 +9,8 @@ class MonoRepoDeps::Project::Builder
   def call(project_root)
     project_file_path = "#{project_root}/#{MonoRepoDeps::PROJECT_FILENAME}"
 
-    project = factory.call(project_root, File.read(project_file_path))
+    project = factory.call(project_root) do
+      eval(File.read(project_file_path))
+    end
   end
 end

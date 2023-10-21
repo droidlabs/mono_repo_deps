@@ -8,7 +8,7 @@ class MonoRepoDeps::Package::FindRoot
     init_dir = dir = File.expand_path(dir)
     project_root = File.expand_path(project_root || SYSTEM_ROOT)
 
-    unless Dir.exists?(init_dir)
+    unless File.exists?(init_dir)
       raise StandardError.new("path '#{init_dir}' does not exist")
     end
 

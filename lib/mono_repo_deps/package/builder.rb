@@ -6,12 +6,12 @@ class MonoRepoDeps::Package::Builder
   ]
 
   Contract String, String, String => MonoRepoDeps::Package
-  def call(package_path, project_root, package_dir)
-    package_root = find_root.call(package_path, project_root)
-    package_file = "#{package_root}/#{MonoRepoDeps::PACKAGE_FILENAME}"
+  def call(package_path, project_root, package_dirname)
+    package_root_path = find_root.call(package_path, project_root)
+    package_file_path = "#{package_root_path}/#{MonoRepoDeps::PACKAGE_FILENAME}"
 
-    package = MonoRepoDeps::Package.new(package_root, package_dir).tap do |p|
-      p.instance_eval(File.read(package_file))
+    package = MonoRepoDeps::Package.new(package_root_path, package_dirname).tap do |p|
+      p.instance_eval(File.read(package_file_path))
     end
 
     package

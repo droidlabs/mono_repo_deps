@@ -9,44 +9,24 @@ class MonoRepoDeps::Package::Initializer
   ]
 
   Contract Or[String, Symbol], KeywordArgs[
-    env: Maybe[Symbol]
+    env: Maybe[Symbol],
+    imported: Optional[ArrayOf[Symbol]]
   ] => nil
-  def call(package_name, env: nil)
+  def call(package_name, env:, imported: [])
     package_name = package_name.to_sym
-    env ||= MonoRepoDeps.current_project.env
     packages_import_order = []
 
     time = Benchmark.realtime do
       packages_import_order = dependency_bypasser
-        .call(package_name: package_name, env: env)
+        .call(package_name: package_name, env: env, imported: imported)
         .map { packages_repo.find(_1) }
-
-      packages_import_order
         .each { MonoRepoDeps.current_project.loader.push_dir(_1.workdir_path) }
         .tap { MonoRepoDeps.current_project.loader.setup }
-
-      packages_import_order.each do |package|
-        require package.entrypoint_file if File.exists?(package.entrypoint_file)
-      end
+        .each { |package| require package.entrypoint_file if File.exists?(package.entrypoint_file) }
     end
 
     puts "imported package '#{package_name}' with #{packages_import_order.size} dependencies in #{'%.2f' % time} seconds for env: #{env}"
 
     nil
   end
-
-  # def import_all
-  #   imported = []
-  #   entrypoints = []
-  #   env = MonoRepoDeps.current_project.env
-
-  #   packages_repo
-  #     .all
-  #     .map { dependency_hash = { name: _1.name, only: nil, skip: nil } }
-  #     .map { import_dependency(_1, imported, entrypoints, env) }
-
-  #   MonoRepoDeps.current_project.loader.setup
-
-  #   entrypoints.each { puts _1; require _1 }
-  # end
 end

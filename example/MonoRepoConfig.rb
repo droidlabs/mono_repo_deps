@@ -2,7 +2,7 @@ setup do |project|
   set_env ->() { :test }
 
   set_configs_dir 'configs'
-  set_package_dir 'package'
+  set_package_dirname 'package'
 
   set_loader :zeitwerk do
     inflect 'filename' => "FileName"

@@ -9,12 +9,12 @@ RSpec.describe MonoRepoDeps::Package::Initializer do
     expect(Object.const_defined?(:OrdersApp)).to be true
   end
 
-  def expect_importing(package, imported_packages, entrypoints = [], only = nil)
-    expect(subject).to receive(:import_dependency!).with(
-      {name: package, only: only, skip: nil}, imported_packages, entrypoints, :test
-    ).and_call_original
-    (imported_packages + [package]).uniq
-  end
+  # def expect_importing(package, imported_packages, entrypoints = [], only = nil)
+  #   expect(subject).to receive(:import_dependency!).with(
+  #     {name: package, only: only, skip: nil}, imported_packages, entrypoints, :test
+  #   ).and_call_original
+  #   (imported_packages + [package]).uniq
+  # end
 
   # it "will #import dependencies in the right order" do
   #   imported_packages = []

@@ -4,7 +4,7 @@ RSpec.describe MonoRepoDeps::Project do
       set_env ->() { :test }
 
       set_configs_dir 'configs'
-      set_package_dir 'package'
+      set_package_dirname 'package'
 
       set_loader :zeitwerk do
         inflect 'uuid_generator' => "UUIDGenerator"
@@ -20,7 +20,7 @@ RSpec.describe MonoRepoDeps::Project do
 
     expect(project.env).to eq(:test)
     expect(project.configs_dir).to eq('configs')
-    expect(project.package_dir).to eq('package')
+    expect(project.package_dirname).to eq('package')
     expect(project.loader).to be_a(MonoRepoDeps::Loaders::Zeitwerk)
   end
 end

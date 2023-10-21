@@ -1,7 +1,7 @@
 class MonoRepoDeps::Project
   include MonoRepoDeps::Mixins
 
-  attr_reader :configs_dir, :package_dir, :root_path, :packages, :loader, :tasks, :packages_folder
+  attr_reader :configs_dir, :package_dirname, :root_path, :packages, :loader, :tasks, :packages_lookup_subdir
 
   # TODO: This mapping should be in a separate service. Also we should allow extending this variable.
   LOADERS_MAPPING = { :zeitwerk => MonoRepoDeps::Loaders::Zeitwerk }
@@ -13,9 +13,9 @@ class MonoRepoDeps::Project
     @root_path = root_path
     @packages = []
     @tasks = []
-    @packages_folder = "."
+    @packages_lookup_subdir = "."
     @configs_dir = 'configs'
-    @package_dir = 'package'
+    @package_dirname = 'package'
 
     nil
   end
@@ -53,15 +53,15 @@ class MonoRepoDeps::Project
   end
 
   Contract String => nil
-  def set_package_dir(value)
-    @package_dir = value
+  def set_package_dirname(value)
+    @package_dirname = value
 
     nil
   end
 
   Contract String => nil
-  def set_packages_folder(value)
-    @packages_folder = value
+  def set_packages_lookup_subdir(value)
+    @packages_lookup_subdir = value
 
     nil
   end

@@ -10,18 +10,18 @@ class MonoRepoDeps::Package::DependencyBypasser
     only: Maybe[ArrayOf[Symbol]],
     skip: Maybe[ArrayOf[Symbol]],
     imported: Optional[ArrayOf[Symbol]],
+    packages_order: Optional[ArrayOf[Symbol]],
     env: Symbol
   ] => ArrayOf[Symbol]
-  def call(package_name:, only: nil, skip: nil, imported: [], env:)
+  def call(package_name:, only: nil, skip: nil, imported: [], packages_order: [], env:)
     package = packages_repo.find!(package_name)
-
-    return imported if imported.include?(package.name)
 
     imported.push(package.name)
 
     package_dependencies = package.get_dependencies(env)
     package_dependencies = package_dependencies.select { only.include?(_1.name) } unless only.nil?
     package_dependencies = package_dependencies.reject { skip.include?(_1.name) } unless skip.nil?
+    package_dependencies = package_dependencies.reject { imported.include?(_1.name) }
 
     package_dependencies.each do |dependency_dto|
       self.call(
@@ -29,10 +29,11 @@ class MonoRepoDeps::Package::DependencyBypasser
         skip: dependency_dto.skip,
         only: dependency_dto.only,
         imported: imported,
+        packages_order: packages_order,
         env: env
       )
     end
 
-    imported.reverse
+    packages_order.push(package_name)
   end
 end

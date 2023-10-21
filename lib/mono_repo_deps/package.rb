@@ -7,12 +7,12 @@ class MonoRepoDeps::Package
 
   DependencyDto = Struct.new(:name, :only, :skip, keyword_init: true)
 
-  Contract String, String, String => nil
-  def initialize(root_path, package_dir)
+  Contract String, String => nil
+  def initialize(root_path, package_dirname)
     @current_env = DEFAULT_ENV
     @dependencies = Hash.new { |h, k| h[k] = [] }
     @root_path = root_path
-    @package_dir = package_dir
+    @package_dirname = package_dirname
 
     nil
   end
@@ -28,7 +28,7 @@ class MonoRepoDeps::Package
   end
 
   def workdir_path
-    File.join( self.root_path, @package_dir )
+    File.join( self.root_path, @package_dirname )
   end
 
   def entrypoint_file
@@ -45,7 +45,7 @@ class MonoRepoDeps::Package
   end
 
   def import_config(config_name)
-    # TODO: implement me
+    # TODO: REMOVE DEPRECATED
   end
 
   Contract Or[Symbol, String], KeywordArgs[

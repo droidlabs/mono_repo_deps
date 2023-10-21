@@ -4,7 +4,7 @@ setup do |project|
   set_configs_dir 'configs'
   set_package_dirname 'package'
 
-  set_loader :zeitwerk do
+  set_loader :zeitwerk do |project|
     inflect 'filename' => "FileName"
     overwrite ->(klass_name) { klass_name.gsub(/Api/) { _1.upcase } }
     ignore "#{project.root_path}/**/schema_migrations"

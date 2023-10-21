@@ -5,7 +5,7 @@ class MonoRepoDeps::Package::Initializer
 
   include MonoRepoDeps::Deps[
     "package.dependency_bypasser",
-    packages_repo: "package.repo"
+    "package.repo"
   ]
 
   Contract Or[String, Symbol], KeywordArgs[
@@ -19,7 +19,7 @@ class MonoRepoDeps::Package::Initializer
     time = Benchmark.realtime do
       packages_import_order = dependency_bypasser
         .call(package_name: package_name, env: env, imported: imported)
-        .map { packages_repo.find(_1) }
+        .map { repo.find(_1) }
         .each { MonoRepoDeps.current_project.loader.push_dir(_1.workdir_path) }
         .tap { MonoRepoDeps.current_project.loader.setup }
         .each { |package| require package.entrypoint_file if File.exists?(package.entrypoint_file) }

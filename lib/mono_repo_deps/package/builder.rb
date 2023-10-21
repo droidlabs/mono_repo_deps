@@ -3,6 +3,7 @@ class MonoRepoDeps::Package::Builder
 
   include MonoRepoDeps::Deps[
     "package.find_root",
+    "package.factory"
   ]
 
   Contract String, String, String => MonoRepoDeps::Package
@@ -10,10 +11,8 @@ class MonoRepoDeps::Package::Builder
     package_root_path = find_root.call(package_path, project_root)
     package_file_path = "#{package_root_path}/#{MonoRepoDeps::PACKAGE_FILENAME}"
 
-    package = MonoRepoDeps::Package.new(package_root_path, package_dirname).tap do |p|
-      p.instance_eval(File.read(package_file_path))
+    package = factory.call(package_root_path, package_dirname) do
+      eval(File.read(package_file_path))
     end
-
-    package
   end
 end

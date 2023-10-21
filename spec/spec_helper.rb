@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+ENV['RUBY_ENV'] = 'test'
+
 require 'mono_repo_deps'
+require 'dry/system/stubs'
 require 'pry'
 
 RSpec.configure do |config|
@@ -12,6 +15,10 @@ RSpec.configure do |config|
 
   config.expect_with :rspec do |c|
     c.syntax = :expect
+  end
+
+  config.before :suite do
+    MonoRepoDeps::Container.enable_stubs!
   end
 end
 

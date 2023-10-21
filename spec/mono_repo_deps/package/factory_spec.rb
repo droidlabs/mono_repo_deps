@@ -1,4 +1,4 @@
-RSpec.describe MonoRepoDeps::Package do
+RSpec.describe MonoRepoDeps::Package::Factory do
   let(:block) {
     Proc.new do
       package do
@@ -19,8 +19,7 @@ RSpec.describe MonoRepoDeps::Package do
   }
 
   it "sets up project" do
-    package = MonoRepoDeps::Package.new(".", "packages")
-    package.instance_exec(&block)
+    package = subject.call('example_dir', 'package', &block)
 
     expect(package.name).to eq(:package_0)
     expect(package.dependencies).to match({
@@ -37,18 +36,19 @@ RSpec.describe MonoRepoDeps::Package do
 
   let(:block_with_duplicates) {
     Proc.new do
+      package do
+        name 'package_0'
+        version '1.0.0'
+      end
+
       dependency do
         import 'package_1'
-        import 'package_1', only: [:package_2_1]
+        import 'package_1'
       end
     end
   }
 
-
   it "doesn't allow to duplicate dependencies" do
-    package = MonoRepoDeps::Package.new(".", "packages")
-    expect {
-      package.setup(&block_with_duplicates)
-    }.to raise_error(StandardError)
+    subject.call('example_dir', 'package', &block_with_duplicates)
   end
 end

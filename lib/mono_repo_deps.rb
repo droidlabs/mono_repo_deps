@@ -12,7 +12,7 @@ module MonoRepoDeps
   PROJECT_FILENAME = 'MonoRepoConfig.rb'
   PACKAGE_FILENAME = 'Package.rb'
 
-  module MonoRepoDeps::Mixins
+  module Mixins
     require 'contracts'
     def self.included(base)
       base.include Contracts::Core
@@ -21,6 +21,9 @@ module MonoRepoDeps
   end
 
   class Container < Dry::System::Container
+    use :env, inferrer: -> { ENV.fetch("RUBY_ENV", :production).to_sym }
+    # use :logging
+
     configure do |config|
       config.root = __dir__
 
@@ -32,7 +35,7 @@ module MonoRepoDeps
 
   Deps = Container.injector
 
-  Container.finalize!
+  Container.finalize! unless Container.env == :test
 
   Zeitwerk::Loader
     .for_gem

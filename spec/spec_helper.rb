@@ -6,9 +6,9 @@ require 'mono_repo_deps'
 require 'dry/system/stubs'
 require 'pry'
 
-RSpec.configure do |config|
-  MonoRepoDeps::Container.enable_stubs!
+MonoRepoDeps::Container.enable_stubs!
 
+RSpec.configure do |config|
   config.after :each do
     MonoRepoDeps::Container.unstub
   end

@@ -29,7 +29,7 @@ class MonoRepoDeps::Package::Factory
         .keys
 
       if already_imported.any?
-        puts "WARNING: duplicated import for following packages'#{already_imported.inspect}' was already added for package '#{package.name}' for env '#{env}'"
+        puts "WARNING: duplicated import for following packages #{already_imported.inspect} was already added for package '#{package.name}' for env '#{env}'"
       end
     end
   end

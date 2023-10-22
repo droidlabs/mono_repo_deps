@@ -1,6 +1,18 @@
 class MonoRepoDeps::Loaders::Base
   include MonoRepoDeps::Mixins
 
+  class << self
+    def registry
+      @registry ||= {}
+    end
+
+    def inherited(subclass)
+      name = subclass.to_s.split("::").last.downcase.to_sym
+
+      registry[name] = subclass
+    end
+  end
+
   attr_reader :overwriters, :inflections, :ignore_dirs, :autoload_dirs, :loader
 
   def initialize(project, &block)

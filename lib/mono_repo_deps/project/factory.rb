@@ -1,9 +1,6 @@
 class MonoRepoDeps::Project::Factory
   include MonoRepoDeps::Mixins
 
-  # TODO: This mapping should be in a separate service. Also we should allow extending this variable.
-  LOADERS_MAPPING = { :zeitwerk => MonoRepoDeps::Loaders::Zeitwerk }
-
   Contract String, Proc => MonoRepoDeps::Project
   def call(project_root, &setup_content)
     @project = MonoRepoDeps::Project.new(project_root)
@@ -54,7 +51,7 @@ class MonoRepoDeps::Project::Factory
   Contract Symbol, Proc => nil
   def set_loader(name, &block)
     @project.instance_exec do
-      @loader = LOADERS_MAPPING.fetch(name).new(self, &block)
+      @loader = MonoRepoDeps::Loaders::Base.registry.fetch(name).new(self, &block)
     end
 
     nil

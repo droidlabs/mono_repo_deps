@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class MonoRepoDeps::Package::Factory
   include MonoRepoDeps::Mixins
 
@@ -14,12 +15,6 @@ class MonoRepoDeps::Package::Factory
       package_dirname: package_dirname,
       dependencies: @dependencies
     ).tap { check_duplicate_dependencies(_1) }
-
-    @name = nil
-    @dependencies = nil
-    @current_env = nil
-
-    package
   end
 
   private

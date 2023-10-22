@@ -2,13 +2,13 @@ PATH
   remote: .
   specs:
     mono_repo_deps (0.1.7)
-      contracts
-      dry-auto_inject
-      dry-configurable
-      dry-container
-      dry-core
-      dry-system
-      zeitwerk
+      contracts (= 0.16.1)
+      dry-auto_inject (~> 1.0.1)
+      dry-configurable (~> 1.1.0)
+      dry-container (~> 0.11.0)
+      dry-core (~> 1.0.1)
+      dry-system (~> 1.0.1)
+      zeitwerk (~> 2.6.12)
 
 GEM
   remote: https://rubygems.org/
@@ -22,12 +22,12 @@ GEM
     dry-auto_inject (1.0.1)
       dry-core (~> 1.0)
       zeitwerk (~> 2.6)
-    dry-configurable (1.0.1)
+    dry-configurable (1.1.0)
       dry-core (~> 1.0, < 2)
       zeitwerk (~> 2.6)
     dry-container (0.11.0)
       concurrent-ruby (~> 1.0)
-    dry-core (1.0.0)
+    dry-core (1.0.1)
       concurrent-ruby (~> 1.0)
       zeitwerk (~> 2.6)
     dry-inflector (1.0.0)

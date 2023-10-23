@@ -9,7 +9,6 @@ class MonoRepoDeps::Loaders::Zeitwerk < MonoRepoDeps::Loaders::Base
   def initialize(...)
     @loader = Zeitwerk::Loader.new
     @loader.inflector = Class.new(Zeitwerk::Inflector).new
-    @loader.enable_reloading
 
     super(...)
   end
@@ -54,7 +53,9 @@ class MonoRepoDeps::Loaders::Zeitwerk < MonoRepoDeps::Loaders::Base
 
   def apply_rules_for(entity)
     @autoload_dirs.uniq.each { entity.push_dir(_1) }
-    @ignore_dirs.uniq.each { entity.ignore(_1) }
+    @ignore_dirs.uniq
+      .map { File.join(MonoRepoDeps.current_project.root_path, _1) }
+      .each { entity.ignore( _1 ) }
 
     entity.inflector.inflect(@inflections)
 

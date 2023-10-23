@@ -90,15 +90,17 @@ module MonoRepoDeps
         total_count = all_packages.size
         imported = []
 
-        Container["package.repo"].all.each_with_index do |package, idx|
+        all_packages.each_with_index do |package, idx|
           puts "loading package #{package.name} (#{idx}/#{total_count}/#{imported.uniq.size})"
 
           Container["package.dependency_bypasser"].call(package_name: package.name, imported: imported, env: current_project.env)
+            .tap { puts _1.inspect }
             .map { Container["package.repo"].find(_1) }
             .each { current_project.loader.push_dir(_1.workdir_path) }
             .tap { current_project.loader.setup }
             .each { require _1.entrypoint_file if File.exists?(_1.entrypoint_file) }
-            .tap { current_project.loader.check_classes }
+
+            current_project.loader.check_classes
         end
       end
     end

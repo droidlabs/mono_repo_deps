@@ -12,7 +12,7 @@ class MonoRepoDeps::Package::Builder
     package_file_path = "#{package_root_path}/#{MonoRepoDeps::PACKAGE_FILENAME}"
 
     package = factory.call(package_root_path, package_dirname) do
-      eval(File.read(package_file_path))
+      instance_eval(File.read(package_file_path))
     end
   end
 end

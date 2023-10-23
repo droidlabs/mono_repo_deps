@@ -10,7 +10,7 @@ class MonoRepoDeps::Project::Builder
     project_file_path = "#{project_root}/#{MonoRepoDeps::PROJECT_FILENAME}"
 
     project = factory.call(project_root) do
-      eval(File.read(project_file_path))
+      instance_eval(File.read(project_file_path))
     end
   end
 end

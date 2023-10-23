@@ -11,9 +11,9 @@ RSpec.describe MonoRepoDeps::Package::DependencyBypasser do
     let(:packages_list) {
       Proc.new do
         [
-          build_package(name: :package_1, deps: [{name: :package_2, only: []}]),
-          build_package(name: :package_2, deps: [{name: :package_3}]),
-          build_package(name: :package_3, deps: []),
+          SpecHelper.build_package(name: :package_1, deps: [{name: :package_2, only: []}]),
+          SpecHelper.build_package(name: :package_2, deps: [{name: :package_3}]),
+          SpecHelper.build_package(name: :package_3, deps: []),
         ]
       end
     }
@@ -29,10 +29,10 @@ RSpec.describe MonoRepoDeps::Package::DependencyBypasser do
     let(:packages_list) {
       Proc.new do
         [
-          build_package(name: :package_1, deps: [{name: :package_4}, {name: :package_2}, {name: :package_3}]),
-          build_package(name: :package_2, deps: [{name: :package_3}, {name: :package_4}]),
-          build_package(name: :package_3, deps: [{name: :package_4}]),
-          build_package(name: :package_4, deps: []),
+          SpecHelper.build_package(name: :package_1, deps: [{name: :package_4}, {name: :package_2}, {name: :package_3}]),
+          SpecHelper.build_package(name: :package_2, deps: [{name: :package_3}, {name: :package_4}]),
+          SpecHelper.build_package(name: :package_3, deps: [{name: :package_4}]),
+          SpecHelper.build_package(name: :package_4, deps: []),
         ]
       end
     }

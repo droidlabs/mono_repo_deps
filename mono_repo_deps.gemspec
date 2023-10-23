@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
     end
   end
   spec.bindir = "exe"
-  spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
+  spec.executables = spec.files.grep(/\Aexe\//) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
   spec.add_dependency "contracts", '0.16.1'
@@ -42,7 +42,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "zeitwerk", "~> 2.6.12"
 
-  # spec.add_dependency "thor"
+  spec.add_dependency "thor"
   # spec.add_dependency "cli-ui", '2.1.0'
   # spec.add_dependency "tty-prompt"
 

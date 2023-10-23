@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "mono_repo_deps"
+require "thor"
+
+class MonoRepoDepsCli < Thor
+  desc "mono_repo cd PACKAGE", "go to PACKAGE"
+  def cd(package)
+    puts "cd #{MonoRepoDeps.packages(File.expand_path(".")).find(package.to_sym).root_path}"
+  end
+end
+
+MonoRepoDepsCli.start(ARGV)

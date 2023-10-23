@@ -1,0 +1,45 @@
+PATH
+  remote: ..
+  specs:
+    mono_repo_deps (0.1.7)
+      contracts
+      dry-auto_inject
+      dry-configurable
+      dry-container
+      dry-core
+      dry-system
+      thor
+      zeitwerk
+
+GEM
+  specs:
+    concurrent-ruby (1.2.2)
+    contracts (0.16.1)
+    dry-auto_inject (1.0.1)
+      dry-core (~> 1.0)
+      zeitwerk (~> 2.6)
+    dry-configurable (1.0.1)
+      dry-core (~> 1.0, < 2)
+      zeitwerk (~> 2.6)
+    dry-container (0.11.0)
+      concurrent-ruby (~> 1.0)
+    dry-core (1.0.0)
+      concurrent-ruby (~> 1.0)
+      zeitwerk (~> 2.6)
+    dry-inflector (1.0.0)
+    dry-system (1.0.1)
+      dry-auto_inject (~> 1.0, < 2)
+      dry-configurable (~> 1.0, < 2)
+      dry-core (~> 1.0, < 2)
+      dry-inflector (~> 1.0, < 2)
+    thor (1.2.2)
+    zeitwerk (2.6.12)
+
+PLATFORMS
+  x86_64-linux
+
+DEPENDENCIES
+  mono_repo_deps!
+
+BUNDLED WITH
+   2.4.20

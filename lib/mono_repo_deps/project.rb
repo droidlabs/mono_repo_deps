@@ -7,7 +7,7 @@ class MonoRepoDeps::Project
     configs_dir: 'configs',
     package_dirname: 'package',
     packages_lookup_subdir: ".",
-    loader: MonoRepoDeps::Loaders::Base.new,
+    loader: MonoRepoDeps::Loaders::Base,
     tasks: []
   }
 
@@ -25,7 +25,7 @@ class MonoRepoDeps::Project
     @env = env
     @packages = []
 
-    @loader = loader || DEFAULT_OPTIONS.fetch(:loader)
+    @loader = loader || DEFAULT_OPTIONS.fetch(:loader).new(@root_path)
     @tasks = tasks || DEFAULT_OPTIONS.fetch(:tasks)
     @configs_dir = configs_dir || DEFAULT_OPTIONS.fetch(:configs_dir)
     @package_dirname = package_dirname || DEFAULT_OPTIONS.fetch(:package_dirname)

@@ -13,9 +13,10 @@ class MonoRepoDeps::Loaders::Base
     end
   end
 
-  attr_reader :overwriters, :inflections, :ignore_dirs, :autoload_dirs, :loader
+  attr_reader :overwriters, :inflections, :ignore_dirs, :autoload_dirs, :loader, :root_path
 
-  def initialize(&block)
+  def initialize(root_path, &block)
+    @root_path = root_path
     @overwriters = []
     @inflections = {}
     @ignore_dirs = []

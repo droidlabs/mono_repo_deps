@@ -6,6 +6,7 @@ class MonoRepoDeps::Project::Factory
   ] => MonoRepoDeps::Project
   def call(root_path, init_proc:)
     @tasks = []
+    @root_path = root_path
 
     instance_exec(&init_proc)
 
@@ -54,7 +55,7 @@ class MonoRepoDeps::Project::Factory
 
   Contract Symbol, Proc => nil
   def set_loader(name, &block)
-    @loader = MonoRepoDeps::Loaders::Base.registry.fetch(name).new(&block)
+    @loader = MonoRepoDeps::Loaders::Base.registry.fetch(name).new(@root_path, &block)
 
     nil
   end

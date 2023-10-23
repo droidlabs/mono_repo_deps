@@ -64,4 +64,13 @@ class MonoRepoDeps::Loaders::Zeitwerk < MonoRepoDeps::Loaders::Base
       result_overwriter.call( super(basename, abspath) )
     end
   end
+
+  def ignore(glob)
+    super(glob)
+
+    @ignore_dirs
+      .uniq
+      .map { File.join(root_path, _1) }
+      .each { @loader.ignore( _1 ) }
+  end
 end

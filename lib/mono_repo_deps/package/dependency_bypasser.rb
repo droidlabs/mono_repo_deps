@@ -16,12 +16,12 @@ class MonoRepoDeps::Package::DependencyBypasser
   def call(package_name:, only: nil, skip: nil, imported: [], packages_order: [], env:)
     package = packages_repo.find!(package_name)
 
+    return [] if imported.include?(package_name)
     imported.push(package.name)
 
     package_dependencies = package.get_dependencies(env)
     package_dependencies = package_dependencies.select { only.include?(_1.name) } unless only.nil?
     package_dependencies = package_dependencies.reject { skip.include?(_1.name) } unless skip.nil?
-    package_dependencies = package_dependencies.reject { imported.include?(_1.name) }
 
     package_dependencies.each do |dependency_dto|
       self.call(

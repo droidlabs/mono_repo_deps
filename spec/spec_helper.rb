@@ -17,3 +17,14 @@ end
 def examples_dir
   File.expand_path("../example", __dir__)
 end
+
+def build_package(name:, deps:)
+  MonoRepoDeps::Package.new(
+    name: name,
+    root_path: 'test',
+    package_dirname: 'package',
+    dependencies: {
+      MonoRepoDeps::Package::DEFAULT_ENV => deps.map { MonoRepoDeps::Package::DependencyDto.new(_1) }
+    }
+  )
+end

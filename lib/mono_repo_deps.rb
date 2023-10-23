@@ -2,9 +2,9 @@
 
 require 'mono_repo_deps/version'
 require 'dry/system'
-require 'pry'
 require 'benchmark'
 require "zeitwerk"
+require 'pry'
 
 module MonoRepoDeps
   class Error < StandardError; end
@@ -12,7 +12,7 @@ module MonoRepoDeps
   PROJECT_FILENAME = 'MonoRepoConfig.rb'
   PACKAGE_FILENAME = 'Package.rb'
 
-  module MonoRepoDeps::Mixins
+  module Mixins
     require 'contracts'
     def self.included(base)
       base.include Contracts::Core
@@ -21,6 +21,9 @@ module MonoRepoDeps
   end
 
   class Container < Dry::System::Container
+    use :env, inferrer: -> { ENV.fetch("RUBY_ENV", :production).to_sym }
+    # use :logging
+
     configure do |config|
       config.root = __dir__
 
@@ -32,7 +35,7 @@ module MonoRepoDeps
 
   Deps = Container.injector
 
-  Container.finalize!
+  Container.finalize! unless Container.env == :test
 
   Zeitwerk::Loader
     .for_gem
@@ -42,60 +45,67 @@ module MonoRepoDeps
   class << self
     attr_accessor :current_project
 
-    def import_by_path(from = caller_locations.first.path, env: nil)
-      for_current_project(from) do
-        Container["package.builder"].call(from, current_project.root_path, current_project.package_dir).then do |package|
-          Container["package.importer"].call(package.name, env: env)
-        end
-      end
-    end
+    def init_package(package_name = nil, from: caller_locations.first.path, env: nil)
+      sync_current_project!(from) do
+        package_name ||= Container["package.builder"].call(from, current_project.root_path, current_project.package_dirname).name
+        env ||= current_project.env
 
-    def import_package(package_name, from: caller_locations.first.path, env: nil)
-      for_current_project(from) do
-        Container["package.importer"].call(package_name, env: env)
+        Container["package.initializer"].call(package_name, env: env)
       end
     end
 
     def root(from = caller_locations.first.path)
-      for_current_project(from) do
+      sync_current_project!(from) do
         current_project.root_path
       end
     end
 
     def tasks(from = caller_locations.first.path)
-      for_current_project(from) do
+      sync_current_project!(from) do
         Container["task.manager"]
       end
     end
 
-    # TODO: find project in registry
     def loader(from = caller_locations.first.path)
-      for_current_project(from) do
+      sync_current_project!(from) do
         current_project.loader
       end
     end
 
     def configs(from = caller_locations.first.path)
-      for_current_project(from) do
+      sync_current_project!(from) do
         Container["config.manager"]
       end
     end
 
     def packages(from = caller_locations.first.path)
-      for_current_project(from) do
+      sync_current_project!(from) do
         Container["package.repo"]
       end
     end
 
     def check_classes(from = caller_locations.first.path)
-      for_current_project(from) do
-        Container["package.importer"].import_all
+      sync_current_project!(from) do
+        all_packages = Container["package.repo"].all
+        total_count = all_packages.size
+        imported = []
 
-        current_project.loader.check_classes
+        all_packages.each_with_index do |package, idx|
+          puts "loading package #{package.name} (#{idx}/#{total_count}/#{imported.uniq.size})"
+
+          Container["package.dependency_bypasser"].call(package_name: package.name, imported: imported, env: current_project.env)
+            .tap { puts _1.inspect }
+            .map { Container["package.repo"].find(_1) }
+            .each { current_project.loader.push_dir(_1.workdir_path) }
+            .tap { current_project.loader.setup }
+            .each { require _1.entrypoint_file if File.exists?(_1.entrypoint_file) }
+
+            current_project.loader.check_classes
+        end
       end
     end
 
-    def for_current_project(path, &block)
+    def sync_current_project!(path, &block)
       path = File.expand_path(path)
       path = File.dirname(path) unless File.directory?(path)
 
@@ -106,7 +116,7 @@ module MonoRepoDeps
       end
 
       synchronize do
-        @current_project = Container["project.builder"].call(path)
+        @current_project = Container["project.initializer"].call(path)
 
         block.call
       end

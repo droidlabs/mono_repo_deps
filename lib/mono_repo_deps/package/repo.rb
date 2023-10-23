@@ -1,9 +1,13 @@
 class MonoRepoDeps::Package::Repo
   include MonoRepoDeps::Mixins
 
+  include MonoRepoDeps::Deps[
+    "package.list",
+  ]
+
   Contract nil => ArrayOf[MonoRepoDeps::Package]
   def all
-    MonoRepoDeps.current_project.packages
+    list.call
   end
 
   Contract KeywordArgs[

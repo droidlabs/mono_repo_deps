@@ -6,7 +6,7 @@ RSpec.describe MonoRepoDeps do
   end
 
   # context "#init" do
-  #   let(:package_root) { File.join(examples_dir, "bounded_contexts/orders/core/orders/bin") }
+  #   let(:package_root) { File.join(SpecHelper.examples_dir, "bounded_contexts/orders/core/orders/bin") }
 
   #   it "works" do
   #     MonoRepoDeps.init(package_root, :test)
@@ -15,7 +15,7 @@ RSpec.describe MonoRepoDeps do
 
   context "#import_package" do
     it "works" do
-      # MonoRepoDeps.import_package('orders_app', from: examples_dir, env: :test)
+      # MonoRepoDeps.import_package('orders_app', from: SpecHelper.examples_dir, env: :test)
     end
   end
 end

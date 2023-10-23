@@ -1,20 +1,34 @@
 # frozen_string_literal: true
 
+ENV['RUBY_ENV'] = 'test'
+
 require 'mono_repo_deps'
+require 'dry/system/stubs'
 require 'pry'
 
+MonoRepoDeps::Container.enable_stubs!
+
 RSpec.configure do |config|
-  # Enable flags like --only-failures and --next-failure
-  config.example_status_persistence_file_path = ".rspec_status"
-
-  # Disable RSpec exposing methods globally on `Module` and `main`
-  config.disable_monkey_patching!
-
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
+  config.after :each do
+    MonoRepoDeps::Container.unstub
   end
 end
 
-def examples_dir
-  File.expand_path("../example", __dir__)
+module SpecHelper
+  class << self
+    def examples_dir
+      File.expand_path("../example", __dir__)
+    end
+
+    def build_package(name:, deps:)
+      MonoRepoDeps::Package.new(
+        name: name,
+        root_path: 'test',
+        package_dirname: 'package',
+        dependencies: {
+          MonoRepoDeps::Package::DEFAULT_ENV => deps.map { MonoRepoDeps::Package::DependencyDto.new(_1) }
+        }
+      )
+    end
+  end
 end

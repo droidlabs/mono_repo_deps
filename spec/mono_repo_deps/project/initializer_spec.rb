@@ -1,6 +1,6 @@
 RSpec.describe MonoRepoDeps::Project::Initializer do
   it "works" do
-    project = MonoRepoDeps::Container["project.initializer"].call(
+    project = subject.call(
       File.join(SpecHelper.examples_dir, "bounded_contexts/orders/orders_app")
     )
 

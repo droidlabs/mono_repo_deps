@@ -2,9 +2,10 @@ RSpec.describe MonoRepoDeps::Package::DependencyBypasser do
   before(:each) do
     MonoRepoDeps::Container.stub("package.list", packages_list)
 
-    MonoRepoDeps.current_project = MonoRepoDeps::Container["project.factory"].call('some/path') do
-      set_env :test
-    end
+    MonoRepoDeps.current_project = MonoRepoDeps::Project.new(
+      root_path: 'some/path',
+      env: :test
+    )
   end
 
   context "reject dependencies listed in :skip option" do

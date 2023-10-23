@@ -2,12 +2,20 @@ class MonoRepoDeps::Project::Factory
   include MonoRepoDeps::Mixins
 
   Contract String, Proc => MonoRepoDeps::Project
-  def call(project_root, &setup_content)
-    @project = MonoRepoDeps::Project.new(project_root)
+  def call(root_path, &setup_content)
+    @tasks = []
 
     instance_exec(&setup_content)
 
-    @project
+    project = MonoRepoDeps::Project.new(
+      root_path: root_path,
+      env: @env,
+      configs_dir: @configs_dir,
+      package_dirname: @package_dirname,
+      packages_lookup_subdir: @packages_lookup_subdir,
+      loader: @loader,
+      tasks: @tasks
+    )
   end
 
   private
@@ -19,49 +27,39 @@ class MonoRepoDeps::Project::Factory
     nil
   end
 
-  Contract Maybe[Or[String, Symbol, Proc]] => Symbol
-  def set_env(value = nil)
-    if value.nil? && !block_given?
-      raise StandardError.new("block or value should be provided")
-    end
+  Contract Maybe[Or[String, Symbol, Proc]] => nil
+  def set_env(value)
+    @env = (value.is_a?(Proc) ? value.call : value).to_sym
 
-    @project.instance_exec do
-      @env = (value.is_a?(Proc) ? value.call : value).to_sym
-    end
+    raise MonoRepoDeps::Error.new("block or value should be provided") if @env.nil?
+
+    nil
   end
 
   Contract String => nil
   def set_configs_dir(value)
-    @project.instance_exec do
-      @configs_dir = value
-    end
+    @configs_dir = value
 
     nil
   end
 
   Contract String => nil
   def set_package_dirname(value)
-    @project.instance_exec do
-      @package_dirname = value
-    end
+    @package_dirname = value
 
     nil
   end
 
   Contract Symbol, Proc => nil
   def set_loader(name, &block)
-    @project.instance_exec do
-      @loader = MonoRepoDeps::Loaders::Base.registry.fetch(name).new(self, &block)
-    end
+    @loader = MonoRepoDeps::Loaders::Base.registry.fetch(name).new(&block)
 
     nil
   end
 
   Contract String => nil
   def set_packages_lookup_subdir(value)
-    @project.instance_exec do
-      @packages_lookup_subdir = value
-    end
+    @packages_lookup_subdir = value
 
     nil
   end
@@ -70,15 +68,13 @@ class MonoRepoDeps::Project::Factory
     on: Symbol
   ], Proc => nil
   def register_task(name, on:, &block)
-    @project.instance_exec do
-      @tasks.push(
-        MonoRepoDeps::Task.new(
-          name: name,
-          on: on,
-          block: block
-        )
+    @tasks.push(
+      MonoRepoDeps::Task.new(
+        name: name,
+        on: on,
+        block: block
       )
-    end
+    )
 
     nil
   end

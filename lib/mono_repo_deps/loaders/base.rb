@@ -15,13 +15,13 @@ class MonoRepoDeps::Loaders::Base
 
   attr_reader :overwriters, :inflections, :ignore_dirs, :autoload_dirs, :loader
 
-  def initialize(project, &block)
+  def initialize(&block)
     @overwriters = []
     @inflections = {}
     @ignore_dirs = []
     @autoload_dirs = []
 
-    instance_exec(project, &block) if block_given?
+    instance_exec(&block) if block_given?
   end
 
   def push_dir(dir)

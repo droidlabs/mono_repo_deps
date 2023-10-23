@@ -12,6 +12,7 @@ class MonoRepoDeps::Project::Initializer
     project_root = find_root.call(dir)
 
     project = builder.call(project_root)
+
     project_packages = indexer.call(project.packages_lookup_subdir, project.root_path, project.package_dirname)
 
     project.set_packages(project_packages)

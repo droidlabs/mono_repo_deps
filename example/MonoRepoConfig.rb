@@ -7,7 +7,7 @@ setup do |project|
   set_loader :zeitwerk do |project|
     inflect 'filename' => "FileName"
     overwrite ->(klass_name) { klass_name.gsub(/Api/) { _1.upcase } }
-    ignore "#{project.root_path}/**/schema_migrations"
+    ignore "**/schema_migrations"
   end
 
   register_task :print_package_name, on: :package do |package, args|

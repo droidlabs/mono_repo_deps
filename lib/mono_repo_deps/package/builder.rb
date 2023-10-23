@@ -11,8 +11,8 @@ class MonoRepoDeps::Package::Builder
     package_root_path = find_root.call(package_path, project_root)
     package_file_path = "#{package_root_path}/#{MonoRepoDeps::PACKAGE_FILENAME}"
 
-    package = factory.call(package_root_path, package_dirname) do
-      instance_eval(File.read(package_file_path))
-    end
+    package_init_proc = proc { instance_eval(File.read(package_file_path)) }
+
+    package = factory.call(package_root_path, package_dirname, init_proc: package_init_proc)
   end
 end

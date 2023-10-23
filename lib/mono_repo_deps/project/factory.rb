@@ -1,11 +1,13 @@
 class MonoRepoDeps::Project::Factory
   include MonoRepoDeps::Mixins
 
-  Contract String, Proc => MonoRepoDeps::Project
-  def call(root_path, &setup_content)
+  Contract String, KeywordArgs[
+    init_proc: Proc
+  ] => MonoRepoDeps::Project
+  def call(root_path, init_proc:)
     @tasks = []
 
-    instance_exec(&setup_content)
+    instance_exec(&init_proc)
 
     project = MonoRepoDeps::Project.new(
       root_path: root_path,

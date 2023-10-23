@@ -2,12 +2,14 @@
 class MonoRepoDeps::Package::Factory
   include MonoRepoDeps::Mixins
 
-  Contract String, String, Proc => MonoRepoDeps::Package
-  def call(package_root, package_dirname, &setup_content)
+  Contract String, String, KeywordArgs[
+    init_proc: Proc
+  ] => MonoRepoDeps::Package
+  def call(package_root, package_dirname, init_proc:)
     @dependencies = Hash.new { |h, k| h[k] = [] }
     @current_env = MonoRepoDeps::Package::DEFAULT_ENV
 
-    instance_exec(&setup_content)
+    instance_exec(&init_proc)
 
     package = MonoRepoDeps::Package.new(
       name: @name,

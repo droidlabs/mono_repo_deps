@@ -19,7 +19,7 @@ RSpec.describe MonoRepoDeps::Package::Factory do
   }
 
   it "sets up project" do
-    package = subject.call('example_dir', 'package', &block)
+    package = subject.call('example_dir', 'package', init_proc: block)
 
     expect(package.name).to eq(:package_0)
     expect(package.dependencies).to match({

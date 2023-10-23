@@ -17,7 +17,7 @@ RSpec.describe MonoRepoDeps::Project::Factory do
   }
 
   it "sets up project" do
-    project = subject.call('example_dir', &block)
+    project = subject.call('example_dir', init_proc: block)
 
     expect(project.env).to eq(:test)
     expect(project.configs_dir).to eq('configs')

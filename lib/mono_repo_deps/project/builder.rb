@@ -9,8 +9,8 @@ class MonoRepoDeps::Project::Builder
   def call(project_root)
     project_file_path = "#{project_root}/#{MonoRepoDeps::PROJECT_FILENAME}"
 
-    project = factory.call(project_root) do
-      instance_eval(File.read(project_file_path))
-    end
+    project_init_proc = proc { instance_eval(File.read(project_file_path)) }
+
+    project = factory.call(project_root, init_proc: project_init_proc)
   end
 end

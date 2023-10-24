@@ -68,6 +68,7 @@ class MonoRepoDeps::Loaders::Zeitwerk < MonoRepoDeps::Loaders::Base
   def ignore(glob)
     super(glob)
 
+    # TODO: if loader.setup is true => push dir directly to the @loader
     @ignore_dirs
       .uniq
       .map { File.join(root_path, _1) }

@@ -94,14 +94,13 @@ module MonoRepoDeps
           puts "loading package #{package.name} (#{idx}/#{total_count}/#{imported.uniq.size})"
 
           Container["package.dependency_bypasser"].call(package_name: package.name, imported: imported, env: current_project.env)
-            .tap { puts _1.inspect }
             .map { Container["package.repo"].find(_1) }
             .each { current_project.loader.push_dir(_1.workdir_path) }
             .tap { current_project.loader.setup }
             .each { require _1.entrypoint_file if File.exists?(_1.entrypoint_file) }
-
-            current_project.loader.check_classes
         end
+
+        current_project.loader.check_classes
       end
     end
 

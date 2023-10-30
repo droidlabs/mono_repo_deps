@@ -3,7 +3,6 @@ RSpec.describe MonoRepoDeps::Package::Factory do
     Proc.new do
       package do
         name 'package_0'
-        version '1.0.0'
       end
 
       dependency do

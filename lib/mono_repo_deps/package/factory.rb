@@ -45,10 +45,6 @@ class MonoRepoDeps::Package::Factory
     nil
   end
 
-  def import_config(config_name)
-    # TODO: REMOVE DEPRECATED
-  end
-
   Contract Or[Symbol, String], KeywordArgs[
     skip: Maybe[ArrayOf[Or[Symbol, String]]],
     only: Maybe[ArrayOf[Or[Symbol, String]]],
@@ -68,11 +64,6 @@ class MonoRepoDeps::Package::Factory
     instance_exec(&block)
 
     nil
-  end
-
-  Contract String => nil
-  def version(value)
-    # TODO: REMOVE DEPRECATED
   end
 
   Contract Or[String, Symbol] => nil

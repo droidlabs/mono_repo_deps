@@ -107,7 +107,7 @@ module MonoRepoDeps
           .map { Container["package.repo"].find(_1) }
           .each { current_project.loader.push_dir(_1.workdir_path) }
           .tap { current_project.loader.setup }
-          .each { require _1.entrypoint_file if File.exists?(_1.entrypoint_file) }
+          .each { require _1.entrypoint_file if File.exist?(_1.entrypoint_file) }
           .tap { current_project.loader.check_classes }
       end
     end

@@ -24,7 +24,7 @@ class MonoRepoDeps::Config::Loader
       DEFAULT_CONFIG_FILENAME
     )
 
-    unless File.exists?(default_config_filename)
+    unless File.exist?(default_config_filename)
       raise StandardError.new("Config '#{config_name}' was not found. Add it to '#{default_config_filename}'")
     end
 
@@ -50,7 +50,7 @@ class MonoRepoDeps::Config::Loader
     hash_to_config(
       hash: YAML.load( ERB.new(File.read(env_config_filename)).result ),
       config: config
-    ) if File.exists?(env_config_filename)
+    ) if File.exist?(env_config_filename)
 
     config.send(config_name)
   end

@@ -28,7 +28,7 @@ class MonoRepoDeps::Package::Initializer
         .map { repo.find(_1) }
         .each { MonoRepoDeps.current_project.loader.push_dir(_1.workdir_path) }
         .tap { MonoRepoDeps.current_project.loader.setup }
-        .each { |package| require package.entrypoint_file if File.exists?(package.entrypoint_file) }
+        .each { |package| require package.entrypoint_file if File.exist?(package.entrypoint_file) }
     end
 
     puts "imported package '#{package_name}' with #{packages_import_order.size} dependencies in #{'%.2f' % time} seconds for env: #{env}"

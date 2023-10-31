@@ -1,13 +1,17 @@
 class MonoRepoDeps::Project::Initializer
   include MonoRepoDeps::Mixins
 
-  include MonoRepoDeps::Deps[
+  Inject = MonoRepoDeps::Deps[
     "package.indexer",
     "project.builder",
     "project.find_root"
   ]
 
-  Contract String => MonoRepoDeps::Project
+  include Inject
+
+  sig do
+    params(dir: String).returns(MonoRepoDeps::Project)
+  end
   def call(dir)
     project_root = find_root.call(dir)
 

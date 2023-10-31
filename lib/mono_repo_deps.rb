@@ -13,10 +13,10 @@ module MonoRepoDeps
   PACKAGE_FILENAME = 'Package.rb'
 
   module Mixins
-    require 'contracts'
     def self.included(base)
-      base.include Contracts::Core
-      base.include Contracts::Builtin
+      require 'sorbet-runtime'
+
+      base.extend T::Sig
     end
   end
 

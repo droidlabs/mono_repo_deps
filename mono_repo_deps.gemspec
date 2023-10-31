@@ -32,7 +32,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(/\Aexe\//) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "contracts", '0.16.1'
+  spec.add_dependency 'sorbet-static-and-runtime', "~> 0.5.11105"
 
   spec.add_dependency "dry-auto_inject", "~> 1.0.1"
   spec.add_dependency "dry-core", "~> 1.0.0"
@@ -43,8 +43,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "zeitwerk", "~> 2.6.12"
 
   spec.add_dependency "thor"
-  # spec.add_dependency "cli-ui", '2.1.0'
-  # spec.add_dependency "tty-prompt"
 
   spec.add_development_dependency "bundler", "~> 2.2"
   spec.add_development_dependency "rake", "~> 13.0"

@@ -3,11 +3,14 @@ class MonoRepoDeps::Task
 
   attr_reader :name, :on, :block
 
-  Contract KeywordArgs[
-    name: Symbol,
-    on: Symbol,
-    block: Proc
-  ] => nil
+  sig do
+    params(
+      name: Symbol,
+      on: Symbol,
+      block: T.proc.params(args: T.anything).returns(T.anything),
+    )
+    .void
+  end
   def initialize(name:, on:, block:)
     @name = name.to_sym
     @on = on

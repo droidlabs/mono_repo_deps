@@ -3,7 +3,13 @@ class MonoRepoDeps::Package::FindRoot
 
   SYSTEM_ROOT = '/'
 
-  Contract String, Maybe[String] => String
+  sig do
+    params(
+      dir: String,
+      project_root: T.nilable(String),
+    )
+    .returns(String)
+  end
   def call(dir, project_root)
     init_dir = dir = File.expand_path(dir)
     project_root = File.expand_path(project_root || SYSTEM_ROOT)

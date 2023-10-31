@@ -6,7 +6,9 @@ class MonoRepoDeps::Project::FindRoot
 
   SYSTEM_ROOT = '/'
 
-  Contract String => String
+  sig do
+    params(dir: String).returns(String)
+  end
   def call(dir)
     init_dir = dir = File.expand_path(dir)
 

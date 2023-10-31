@@ -3,15 +3,21 @@ require 'benchmark'
 class MonoRepoDeps::Package::Initializer
   include MonoRepoDeps::Mixins
 
-  include MonoRepoDeps::Deps[
+  Inject = MonoRepoDeps::Deps[
     "package.dependency_bypasser",
     "package.repo"
   ]
 
-  Contract Or[String, Symbol], KeywordArgs[
-    env: Maybe[Symbol],
-    imported: Optional[ArrayOf[Symbol]]
-  ] => nil
+  include Inject
+
+  sig do
+    params(
+      package_name: T.any(Symbol, String),
+      env: Symbol,
+      imported: T::Array[Symbol]
+    )
+    .void
+  end
   def call(package_name, env:, imported: [])
     package_name = package_name.to_sym
     packages_import_order = []

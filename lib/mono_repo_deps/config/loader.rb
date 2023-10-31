@@ -7,7 +7,12 @@ class MonoRepoDeps::Config::Loader
 
   DEFAULT_CONFIG_FILENAME = 'default.yml'
 
-  Contract Or[String, Symbol] => MonoRepoDeps::Config
+  sig do
+    params(
+      config_name: T.any(String, Symbol),
+    )
+    .returns(MonoRepoDeps::Config)
+  end
   def call(config_name)
     config_name = config_name.to_s
     config = MonoRepoDeps::Config.new

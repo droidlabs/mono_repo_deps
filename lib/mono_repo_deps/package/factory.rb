@@ -56,10 +56,6 @@ class MonoRepoDeps::Package::Factory
     nil
   end
 
-  def import_config(config_name)
-    # TODO: REMOVE DEPRECATED
-  end
-
   sig do
     params(
       package_name: T.any(Symbol, String),
@@ -88,16 +84,6 @@ class MonoRepoDeps::Package::Factory
     instance_exec(&block)
 
     nil
-  end
-
-  sig do
-    params(
-      value: String
-    )
-    .void
-  end
-  def version(value)
-    # TODO: REMOVE DEPRECATED
   end
 
   sig do

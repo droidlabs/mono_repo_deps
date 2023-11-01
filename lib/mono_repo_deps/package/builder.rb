@@ -1,12 +1,21 @@
 class MonoRepoDeps::Package::Builder
   include MonoRepoDeps::Mixins
 
-  include MonoRepoDeps::Deps[
+  Inject = MonoRepoDeps::Deps[
     "package.find_root",
     "package.factory"
   ]
 
-  Contract String, String, String => MonoRepoDeps::Package
+  include Inject
+
+  sig do
+    params(
+      package_path: String,
+      project_root: String,
+      package_dirname: String
+    )
+    .returns(MonoRepoDeps::Package)
+  end
   def call(package_path, project_root, package_dirname)
     package_root_path = find_root.call(package_path, project_root)
     package_file_path = "#{package_root_path}/#{MonoRepoDeps::PACKAGE_FILENAME}"

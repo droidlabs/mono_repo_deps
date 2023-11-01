@@ -11,15 +11,18 @@ class MonoRepoDeps::Project
     tasks: []
   }
 
-  Contract KeywordArgs[
-    root_path: String,
-    env: Symbol,
-    loader: Maybe[MonoRepoDeps::Loaders::Base],
-    configs_dir: Maybe[String],
-    package_dirname: Maybe[String],
-    packages_lookup_subdir: Maybe[String],
-    tasks: Maybe[ArrayOf[MonoRepoDeps::Task]]
-  ] => nil
+  sig do
+    params(
+      root_path: String,
+      env: Symbol,
+      loader: T.nilable(MonoRepoDeps::Loaders::Base),
+      configs_dir: T.nilable(String),
+      package_dirname: T.nilable(String),
+      packages_lookup_subdir: T.nilable(String),
+      tasks: T.nilable(T::Array[MonoRepoDeps::Task])
+    )
+    .void
+  end
   def initialize(root_path:, env:, loader: nil, configs_dir: nil, package_dirname: nil, packages_lookup_subdir: nil, tasks: nil)
     @root_path = root_path
     @env = env

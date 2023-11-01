@@ -1,11 +1,20 @@
 class MonoRepoDeps::Task::Manager
   include MonoRepoDeps::Mixins
 
-  include MonoRepoDeps::Deps[
+  Inject = MonoRepoDeps::Deps[
     packages_repo: "package.repo"
   ]
 
-  # Contract Symbol, Maybe[ArrayOf[Any]] => MonoRepoDeps::Config
+  include Inject
+
+  sig do
+    params(
+      method_name: Symbol,
+      args: T.anything,
+      kwargs: T.anything
+    )
+    .void
+  end
   def method_missing(method_name, *args, **kwargs)
     task = MonoRepoDeps.current_project.tasks.detect { _1.name == method_name } || (raise StandardError.new("task '#{method_name}' not found for project"))
 

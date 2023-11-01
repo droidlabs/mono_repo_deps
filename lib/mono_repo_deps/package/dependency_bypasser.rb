@@ -1,19 +1,24 @@
 class MonoRepoDeps::Package::DependencyBypasser
   include MonoRepoDeps::Mixins
 
-  include MonoRepoDeps::Deps[
+  Inject = MonoRepoDeps::Deps[
     packages_repo: "package.repo"
   ]
 
-  Contract KeywordArgs[
-    package_name: Symbol,
-    only: Maybe[ArrayOf[Symbol]],
-    skip: Maybe[ArrayOf[Symbol]],
-    imported: Optional[ArrayOf[Symbol]],
-    packages_order: Optional[ArrayOf[Symbol]],
-    env: Symbol
-  ] => ArrayOf[Symbol]
-  def call(package_name:, only: nil, skip: nil, imported: [], packages_order: [], env:)
+  include Inject
+
+  sig do
+    params(
+      package_name: Symbol,
+      env: Symbol,
+      only: T.nilable(T::Array[Symbol]),
+      skip: T.nilable(T::Array[Symbol]),
+      imported: T::Array[Symbol],
+      packages_order: T::Array[Symbol],
+    )
+    .returns(T::Array[Symbol])
+  end
+  def call(package_name:, env:, only: nil, skip: nil, imported: [], packages_order: [])
     package = packages_repo.find!(package_name)
 
     return [] if imported.include?(package_name)

@@ -1,12 +1,20 @@
 class MonoRepoDeps::Config::Manager
   include MonoRepoDeps::Mixins
 
-  include MonoRepoDeps::Deps[
+  Inject = MonoRepoDeps::Deps[
     config_loader: "config.loader"
   ]
 
-  Contract Symbol, Maybe[ArrayOf[Any]] => MonoRepoDeps::Config
+  include Inject
+
+  sig do
+    params(
+      method_name: Symbol,
+      args: T.anything
+    )
+    .returns(MonoRepoDeps::Config)
+  end
   def method_missing(method_name, *args)
-    config_loader.call(method_name, *args)
+    config_loader.call(method_name)
   end
 end

@@ -1,11 +1,15 @@
 class MonoRepoDeps::Project::Builder
   include MonoRepoDeps::Mixins
 
-  include MonoRepoDeps::Deps[
+  Inject = MonoRepoDeps::Deps[
     "project.factory",
   ]
 
-  Contract String => MonoRepoDeps::Project
+  include Inject
+
+  sig do
+    params(project_root: String).returns(MonoRepoDeps::Project)
+  end
   def call(project_root)
     project_file_path = "#{project_root}/#{MonoRepoDeps::PROJECT_FILENAME}"
 

@@ -7,12 +7,15 @@ class MonoRepoDeps::Package
 
   DependencyDto = Struct.new(:name, :only, :skip, keyword_init: true)
 
-  Contract KeywordArgs[
-    name: Symbol,
-    root_path: String,
-    package_dirname: String,
-    dependencies: Hash
-  ] => nil
+  sig do
+    params(
+      name: Symbol,
+      root_path: String,
+      package_dirname: String,
+      dependencies: T::Hash[Symbol, DependencyDto]
+    )
+    .void
+  end
   def initialize(name:, root_path:, package_dirname:, dependencies:)
     @name = name
     @root_path = root_path
@@ -22,7 +25,9 @@ class MonoRepoDeps::Package
     nil
   end
 
-  Contract Or[nil, Symbol] => ArrayOf[DependencyDto]
+  sig do
+    params(env: T.nilable(Symbol)).returns(T::Array[DependencyDto])
+  end
   def get_dependencies(env = nil)
     [DEFAULT_ENV, env].uniq.compact.inject([]) do |acc, item|
       acc += @dependencies.fetch(item, [])

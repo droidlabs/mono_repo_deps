@@ -1,9 +1,13 @@
 class MonoRepoDeps::Project::Factory
   include MonoRepoDeps::Mixins
 
-  Contract String, KeywordArgs[
-    init_proc: Proc
-  ] => MonoRepoDeps::Project
+  sig do
+    params(
+      root_path: String,
+      init_proc: T.proc.params(args: T.anything).returns(T.anything)
+    )
+    .returns(MonoRepoDeps::Project)
+  end
   def call(root_path, init_proc:)
     @tasks = []
     @root_path = root_path
@@ -23,14 +27,24 @@ class MonoRepoDeps::Project::Factory
 
   private
 
-  Contract Proc => nil
+  sig do
+    params(
+      block: T.proc.params(args: T.anything).returns(T.anything)
+    )
+    .void
+  end
   def setup(&block)
     instance_exec(@project, &block)
 
     nil
   end
 
-  Contract Maybe[Or[String, Symbol, Proc]] => nil
+  sig do
+    params(
+      value: T.any(Symbol, String, T.proc.returns(T.any(String, Symbol)))
+    )
+    .void
+  end
   def set_env(value)
     @env = (value.is_a?(Proc) ? value.call : value).to_sym
 
@@ -39,37 +53,54 @@ class MonoRepoDeps::Project::Factory
     nil
   end
 
-  Contract String => nil
+  sig do
+    params(value: String).void
+  end
   def set_configs_dir(value)
     @configs_dir = value
 
     nil
   end
 
-  Contract String => nil
+  sig do
+    params(value: String).void
+  end
   def set_package_dirname(value)
     @package_dirname = value
 
     nil
   end
 
-  Contract Symbol, Proc => nil
+  sig do
+    params(
+      name: Symbol,
+      block: T.proc.params(args: T.anything).returns(T.anything)
+    )
+    .void
+  end
   def set_loader(name, &block)
     @loader = MonoRepoDeps::Loaders::Base.registry.fetch(name).new(@root_path, &block)
 
     nil
   end
 
-  Contract String => nil
+  sig do
+    params(value: String).void
+  end
   def set_packages_lookup_subdir(value)
     @packages_lookup_subdir = value
 
     nil
   end
 
-  Contract Symbol, KeywordArgs[
-    on: Symbol
-  ], Proc => nil
+  sig do
+    params(
+      name: Symbol,
+      on: Symbol,
+      block: T.proc.params(args: T.anything).returns(T.anything),
+    )
+    .void
+  end
   def register_task(name, on:, &block)
     @tasks.push(
       MonoRepoDeps::Task.new(

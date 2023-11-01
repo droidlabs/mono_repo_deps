@@ -1,11 +1,20 @@
 class MonoRepoDeps::Package::Indexer
   include MonoRepoDeps::Mixins
 
-  include MonoRepoDeps::Deps[
+  Inject = MonoRepoDeps::Deps[
     "package.builder",
   ]
 
-  Contract String, String, String => ArrayOf[MonoRepoDeps::Package]
+  include Inject
+
+  sig do
+    params(
+      packages_lookup_subdir: String,
+      project_root: String,
+      package_dirname: String
+    )
+    .returns(T::Array[MonoRepoDeps::Package])
+  end
   def call(packages_lookup_subdir, project_root, package_dirname)
     packages_path = File.join(
       project_root,

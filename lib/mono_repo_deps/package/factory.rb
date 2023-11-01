@@ -2,9 +2,14 @@
 class MonoRepoDeps::Package::Factory
   include MonoRepoDeps::Mixins
 
-  Contract String, String, KeywordArgs[
-    init_proc: Proc
-  ] => MonoRepoDeps::Package
+  sig do
+    params(
+      package_root: String,
+      package_dirname: String,
+      init_proc: T.proc.params(args: T.anything).returns(T.anything)
+    )
+    .returns(MonoRepoDeps::Package)
+  end
   def call(package_root, package_dirname, init_proc:)
     @dependencies = Hash.new { |h, k| h[k] = [] }
     @current_env = MonoRepoDeps::Package::DEFAULT_ENV
@@ -36,7 +41,13 @@ class MonoRepoDeps::Package::Factory
     end
   end
 
-  # Contract Symbol, Proc => nil
+  sig do
+    params(
+      env: Symbol,
+      block: T.proc.params(args: T.anything).returns(T.anything)
+    )
+    .void
+  end
   def dependency(env = MonoRepoDeps::Package::DEFAULT_ENV, &block)
     @current_env = env
     instance_eval(&block)
@@ -45,10 +56,14 @@ class MonoRepoDeps::Package::Factory
     nil
   end
 
-  Contract Or[Symbol, String], KeywordArgs[
-    skip: Maybe[ArrayOf[Or[Symbol, String]]],
-    only: Maybe[ArrayOf[Or[Symbol, String]]],
-  ] => nil
+  sig do
+    params(
+      package_name: T.any(Symbol, String),
+      skip: T.nilable(T::Array[Symbol]),
+      only: T.nilable(T::Array[Symbol]),
+    )
+    .void
+  end
   def import(package_name, skip: nil, only: nil)
     package_name = package_name.to_sym
     skip = skip&.map(&:to_sym)
@@ -59,14 +74,24 @@ class MonoRepoDeps::Package::Factory
     nil
   end
 
-  Contract Proc => nil
+  sig do
+    params(
+      block: T.proc.params(args: T.anything).returns(T.anything)
+    )
+    .void
+  end
   def package(&block)
     instance_exec(&block)
 
     nil
   end
 
-  Contract Or[String, Symbol] => nil
+  sig do
+    params(
+      value: T.any(String, Symbol)
+    )
+    .void
+  end
   def name(value)
     @name = value.to_sym
 

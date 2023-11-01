@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    mono_repo_deps (0.1.12)
+    mono_repo_deps (0.1.13)
       dry-auto_inject (~> 1.0.1)
       dry-configurable (~> 1.0.1)
       dry-container (~> 0.11.0)

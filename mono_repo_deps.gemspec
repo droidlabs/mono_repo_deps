@@ -8,17 +8,36 @@ Gem::Specification.new do |spec|
   spec.authors = ["Nikita Kononov"]
   spec.email = ["vocrsz@gmail.com"]
 
-  spec.summary = "Write a short summary, because RubyGems requires one."
-  spec.description = "Write a longer description or delete this line."
-  spec.homepage = "https://github.com/vocrsz/mono_repo_deps"
+  spec.summary = "A Ruby gem for efficiently managing dependencies within a monorepo."
+  spec.description   = <<-DESC
+    MonoRepoDeps is a powerful tool designed to streamline the process of splitting code into separate packages
+    within a monorepository. It provides a flexible and easy-to-use solution for managing dependencies between
+    packages, making it ideal for large-scale projects with complex codebases.
+
+    Key Features:
+    - Simplifies the organization of code in a monorepo structure.
+    - Manages dependencies seamlessly between different packages.
+    - Enhances collaboration and code sharing among teams working on interconnected components.
+    - Offers a straightforward and customizable configuration for your monorepo setup.
+
+    How to Use:
+    - Install the gem using `gem install MonoRepoDeps`.
+    - Configure MonoRepoDeps with your monorepo specifications.
+    - Enjoy a more efficient and organized development workflow.
+
+    Visit the official documentation for detailed instructions and examples.
+
+    GitHub Repository: https://github.com/droidlabs/MonoRepoDeps
+  DESC
+  spec.homepage = "https://github.com/droidlabs/mono_repo_deps"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.7.0"
 
   # spec.metadata["allowed_push_host"] = "Set to your gem server 'https://example.com'"
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/vocrsz/mono_repo_deps"
-  spec.metadata["changelog_uri"] = "https://github.com/vocrsz/mono_repo_deps"
+  spec.metadata["source_code_uri"] = "https://github.com/droidlabs/mono_repo_deps"
+  spec.metadata["changelog_uri"] = "https://github.com/droidlabs/mono_repo_deps"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.

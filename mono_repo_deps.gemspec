@@ -51,7 +51,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(/\Aexe\//) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency 'sorbet-static-and-runtime', "~> 0.5.11105"
+  spec.add_dependency 'sorbet-runtime', "~> 0.5.11164"
 
   spec.add_dependency "dry-auto_inject", "~> 1.0.1"
   spec.add_dependency "dry-core", "~> 1.0.0"

@@ -7,8 +7,8 @@ RSpec.describe MonoRepoDeps::Package::Factory do
 
       dependency do
         import 'package_1'
-        import 'package_2', only: [:package_2_1]
-        import 'package_3', skip: [:package_3_1]
+        import 'package_2'
+        import 'package_3'
       end
 
       dependency :test do
@@ -23,12 +23,12 @@ RSpec.describe MonoRepoDeps::Package::Factory do
     expect(package.name).to eq(:package_0)
     expect(package.dependencies).to match({
       _default_: [
-        MonoRepoDeps::Package::DependencyDto.new(name: :package_1, only: nil, skip: nil),
-        MonoRepoDeps::Package::DependencyDto.new(name: :package_2, only: [:package_2_1], skip: nil),
-        MonoRepoDeps::Package::DependencyDto.new(name: :package_3, only: nil, skip: [:package_3_1])
+        :package_1,
+        :package_2,
+        :package_3
       ],
       test: [
-        MonoRepoDeps::Package::DependencyDto.new(name: :package_4, only: nil, skip: nil)
+        :package_4
       ]
     })
   end

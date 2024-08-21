@@ -1,3 +1,5 @@
+require 'set'
+
 class MonoRepoDeps::Package::DependencyBypasser
   include MonoRepoDeps::Mixins
 
@@ -11,31 +13,30 @@ class MonoRepoDeps::Package::DependencyBypasser
     params(
       package_name: Symbol,
       env: Symbol,
-      only: T.nilable(T::Array[Symbol]),
-      skip: T.nilable(T::Array[Symbol]),
-      imported: T::Array[Symbol],
-      packages_order: T::Array[Symbol],
     )
     .returns(T::Array[Symbol])
   end
-  def call(package_name:, env:, only: nil, skip: nil, imported: [], packages_order: [])
+  def call(package_name:, env:)
+    imported = Set.new
+
+    walk(package_name: package_name, env: env, imported: imported)
+  end
+
+  private
+
+  def walk(package_name:, env:, imported:, packages_order: [])
     package = packages_repo.find!(package_name)
 
-    return [] if imported.include?(package_name)
-    imported.push(package.name)
+    return if !imported.add?(package_name)
 
     package_dependencies = package.get_dependencies(env)
-    package_dependencies = package_dependencies.select { only.include?(_1.name) } unless only.nil?
-    package_dependencies = package_dependencies.reject { skip.include?(_1.name) } unless skip.nil?
 
-    package_dependencies.each do |dependency_dto|
-      self.call(
-        package_name: dependency_dto.name,
-        skip: dependency_dto.skip,
-        only: dependency_dto.only,
+    package_dependencies.each do |name|
+      walk(
+        package_name: name,
         imported: imported,
         packages_order: packages_order,
-        env: env
+        env: env# MonoRepoDeps::Package::DEFAULT_ENV,
       )
     end
 

@@ -4,7 +4,7 @@ end
 
 dependency do
   import 'cart_datasets'
-  import 'orders_query_api', only: ['orders_datasets']
+  import 'orders_query_api'
 end
 
 dependency :test do

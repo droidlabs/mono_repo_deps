@@ -5,14 +5,12 @@ class MonoRepoDeps::Package
 
   DEFAULT_ENV = :_default_
 
-  DependencyDto = Struct.new(:name, :only, :skip, keyword_init: true)
-
   sig do
     params(
       name: Symbol,
       root_path: String,
       package_dirname: String,
-      dependencies: T::Hash[Symbol, DependencyDto]
+      dependencies: T::Hash[Symbol, Symbol]
     )
     .void
   end
@@ -26,12 +24,18 @@ class MonoRepoDeps::Package
   end
 
   sig do
-    params(env: T.nilable(Symbol)).returns(T::Array[DependencyDto])
+    params(env: T.nilable(Symbol)).returns(T::Array[Symbol])
   end
   def get_dependencies(env = nil)
-    [DEFAULT_ENV, env].uniq.compact.inject([]) do |acc, item|
-      acc += @dependencies.fetch(item, [])
-    end
+    default_deps = @dependencies.fetch(DEFAULT_ENV, [])
+    env_deps     = @dependencies.fetch(env, [])
+
+    default_deps | env_deps
+  end
+
+  def get_bc
+    # /app/bounded_contexts/jobs/microservices/jobs_app
+    @root_path.split('/')[3]
   end
 
   def get_dependency_envs

@@ -45,12 +45,12 @@ module MonoRepoDeps
   class << self
     attr_accessor :current_project
 
-    def init_package(package_name = nil, from: caller_locations.first.path, env: nil)
+    def init_package(package_name = nil, from: caller_locations.first.path, env: nil, prevent_eager_load: false)
       sync_current_project!(from) do
         package_name ||= Container["package.builder"].call(from, current_project.root_path, current_project.package_dirname).name
         env ||= current_project.env
 
-        Container["package.initializer"].call(package_name, env: env)
+        Container["package.initializer"].call(package_name, env: env, prevent_eager_load: prevent_eager_load)
       end
     end
 

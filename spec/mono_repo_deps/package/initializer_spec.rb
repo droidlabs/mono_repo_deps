@@ -3,7 +3,7 @@ RSpec.describe MonoRepoDeps::Package::Initializer do
     expect(Object.const_defined?(:OrdersApp)).to be false
 
     MonoRepoDeps.sync_current_project!(SpecHelper.examples_dir) do
-      subject.call('orders_app', env: :test)
+      subject.call('orders_app', env: :test, prevent_eager_load: true)
     end
 
     expect(Object.const_defined?(:OrdersApp)).to be true

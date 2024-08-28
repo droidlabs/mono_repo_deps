@@ -45,12 +45,12 @@ module MonoRepoDeps
   class << self
     attr_accessor :current_project
 
-    def init_package(package_name = nil, from: caller_locations.first.path, env: nil)
+    def init_package(package_name = nil, from: caller_locations.first.path, env: nil, prevent_eager_load: false)
       sync_current_project!(from) do
         package_name ||= Container["package.builder"].call(from, current_project.root_path, current_project.package_dirname).name
         env ||= current_project.env
 
-        Container["package.initializer"].call(package_name, env: env)
+        Container["package.initializer"].call(package_name, env: env, prevent_eager_load: prevent_eager_load)
       end
     end
 
@@ -81,34 +81,6 @@ module MonoRepoDeps
     def packages(from = caller_locations.first.path)
       sync_current_project!(from) do
         Container["package.repo"]
-      end
-    end
-
-    def check_classes(from = caller_locations.first.path)
-      sync_current_project!(from) do
-        all_packages = Container["package.repo"].all
-        total_count = all_packages.size
-        imported = []
-        packages_order = []
-
-        all_packages.each_with_index do |package, idx|
-          puts "loading package #{package.name} (#{idx+1}/#{total_count}/#{imported.size})"
-
-          Container["package.dependency_bypasser"].call(
-            package_name: package.name,
-            imported: imported,
-            packages_order: packages_order,
-            env: current_project.env
-          )
-        end
-
-        packages_order
-          .uniq
-          .map { Container["package.repo"].find(_1) }
-          .each { current_project.loader.push_dir(_1.workdir_path) }
-          .tap { current_project.loader.setup }
-          .each { require _1.entrypoint_file if File.exist?(_1.entrypoint_file) }
-          .tap { current_project.loader.check_classes }
       end
     end
 

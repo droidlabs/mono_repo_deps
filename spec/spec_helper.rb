@@ -26,7 +26,7 @@ module SpecHelper
         root_path: 'test',
         package_dirname: 'package',
         dependencies: {
-          MonoRepoDeps::Package::DEFAULT_ENV => deps.map { MonoRepoDeps::Package::DependencyDto.new(_1) }
+          MonoRepoDeps::Package::DEFAULT_ENV => deps
         }
       )
     end

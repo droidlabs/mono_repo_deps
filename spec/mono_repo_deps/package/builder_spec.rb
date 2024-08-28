@@ -10,13 +10,8 @@ RSpec.describe MonoRepoDeps::Package::Builder do
     expect(package.name).to eq(:orders_app)
 
     expect(package.dependencies).to eq({
-      _default_: [
-        MonoRepoDeps::Package::DependencyDto.new(name: :orders_core)
-      ],
-      test: [
-        MonoRepoDeps::Package::DependencyDto.new(name: :test_utils),
-        MonoRepoDeps::Package::DependencyDto.new(name: :storefront_core)
-      ]
+      _default_: [:orders_core],
+      test: [:test_utils, :storefront_core]
     })
   end
 end

@@ -30,7 +30,6 @@ class MonoRepoDeps::Package::Factory
     package.get_dependency_envs.each do |env|
       already_imported = package
         .get_dependencies(env)
-        .map(&:name)
         .group_by{ |e| e }
         .select { |k, v| v.size > 1 }
         .keys
@@ -59,17 +58,13 @@ class MonoRepoDeps::Package::Factory
   sig do
     params(
       package_name: T.any(Symbol, String),
-      skip: T.nilable(T::Array[Symbol]),
-      only: T.nilable(T::Array[Symbol]),
     )
     .void
   end
-  def import(package_name, skip: nil, only: nil)
+  def import(package_name)
     package_name = package_name.to_sym
-    skip = skip&.map(&:to_sym)
-    only = only&.map(&:to_sym)
 
-    @dependencies[@current_env] << MonoRepoDeps::Package::DependencyDto.new(name: package_name, skip: skip, only: only)
+    @dependencies[@current_env] << package_name
 
     nil
   end

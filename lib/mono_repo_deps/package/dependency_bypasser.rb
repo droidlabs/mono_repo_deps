@@ -36,7 +36,7 @@ class MonoRepoDeps::Package::DependencyBypasser
         package_name: name,
         imported: imported,
         packages_order: packages_order,
-        env: env# MonoRepoDeps::Package::DEFAULT_ENV,
+        env: MonoRepoDeps::Package::DEFAULT_ENV,
       )
     end
 

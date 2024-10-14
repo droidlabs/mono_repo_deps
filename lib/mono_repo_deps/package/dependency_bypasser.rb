@@ -17,9 +17,7 @@ class MonoRepoDeps::Package::DependencyBypasser
     .returns(T::Array[Symbol])
   end
   def call(package_name:, env:)
-    imported = Set.new
-
-    walk(package_name: package_name, env: env, imported: imported)
+    walk(package_name: package_name, env: env, imported: Set.new)
   end
 
   private

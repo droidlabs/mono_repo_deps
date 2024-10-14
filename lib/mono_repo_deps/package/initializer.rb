@@ -14,10 +14,11 @@ class MonoRepoDeps::Package::Initializer
     params(
       package_name: T.any(Symbol, String),
       env: Symbol,
+      prevent_eager_load: T::Boolean
     )
     .void
   end
-  def call(package_name, env:)
+  def call(package_name, env:, prevent_eager_load: false)
     package = repo.find!(package_name.to_sym)
     sorted_packages = nil
 
@@ -28,7 +29,7 @@ class MonoRepoDeps::Package::Initializer
 
       sorted_packages.each do |sorted_package|
         MonoRepoDeps.current_project.loader.push_dir(sorted_package.workdir_path)
-        MonoRepoDeps.current_project.loader.loader.do_not_eager_load(sorted_package.workdir_path)
+        MonoRepoDeps.current_project.loader.loader.do_not_eager_load(sorted_package.workdir_path) if prevent_eager_load
       end
 
       MonoRepoDeps.current_project.loader.setup

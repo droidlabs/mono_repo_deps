@@ -16,7 +16,15 @@ class MonoRepoDeps::Package::Repo
 
   sig do
     params(
-      name: T.nilable(T.any(String, Symbol)),
+      name: T.nilable(
+        T.any(
+          String,
+          Symbol,
+          T::Array[
+            T.any(String, Symbol)
+          ]
+        )
+      ),
     )
     .returns(T::Array[MonoRepoDeps::Package])
   end

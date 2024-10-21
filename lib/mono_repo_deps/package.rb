@@ -33,11 +33,6 @@ class MonoRepoDeps::Package
     default_deps | env_deps
   end
 
-  def get_bc
-    # /app/bounded_contexts/jobs/microservices/jobs_app
-    @root_path.split('/')[3]
-  end
-
   def get_dependency_envs
     @dependencies.keys
   end
@@ -48,5 +43,9 @@ class MonoRepoDeps::Package
 
   def entrypoint_file
     File.join( self.workdir_path, "#{name}.rb" )
+  end
+
+  def specs_path
+    File.join( self.root_path, '/spec/' )
   end
 end
